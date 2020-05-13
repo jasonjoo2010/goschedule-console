@@ -1,0 +1,176 @@
+@charset "utf-8";
+
+body {
+    color: #222;
+}
+
+button {
+    font-size: 16px;
+    border: 1px solid #004295;
+    border-radius: 5px;
+    background: #3387ff;
+    color: white;
+    padding: 4px 10px;
+}
+
+button.btn {
+    background: #ddd;
+    border-color: #333;
+    color: #222;
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+li {
+    list-style: none;
+}
+
+h1 {
+    padding: 10px;
+    margin: 0;
+    font-size: 30px;
+}
+
+h2 {
+    margin: 0;
+    font-size: 26px;
+    line-height: 34px;
+    padding-left: 50px;
+    padding-bottom: 20px;
+}
+
+a {
+    color: #0077c6;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #0077c6;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.c {
+    clear: both;
+    width: 0;
+    height: 0;
+}
+
+.navTop {
+    height: 28px;
+    padding-bottom: 15px;
+}
+
+.navTop li:hover {
+    background-color: rgb(78, 119, 172, 0.2);
+}
+
+.navTop li {
+    float: left;
+    line-height: 20px;
+    padding: 4px 10px;
+}
+
+.navTop li a {
+    color: #c84446;
+}
+
+.navTop li.cur {
+    background: rgb(183, 30, 124, 0.2);
+}
+
+.navTop li.cur a {
+    color: #8e3146;
+}
+
+.footer {
+    border-top: 4px solid #81c2e2;
+    margin: 10px;
+    margin-top: 20px;
+    padding-top: 10px;
+    line-height: 24px;
+}
+
+.footer .left {
+    float: left;
+    width: 250px;
+}
+
+.footer .left .title {
+    padding-bottom: 5px;
+}
+
+.container {
+    margin: 0 10px;
+}
+
+.form {
+    font-size: 16px;
+}
+
+.form li {
+    line-height: 40px;
+    height: 50px;
+}
+
+.form li label {
+    font-weight: bold;
+    display: block;
+    float: left;
+    width: 120px;
+    height: 30px;
+    text-align: right;
+    margin-right: 10px;
+}
+
+.form li input {
+    line-height: 30px;
+    font-size: 16px;
+    display: block;
+    float: left;
+    width: 350px;
+}
+
+.form li select {
+    min-width: 100px;
+    line-height: 40px;
+    font-size: 16px;
+    display: block;
+    float: left;
+    border: none;
+    background: #ddd;
+
+}
+
+.form li select:focus {
+    outline: none;
+}
+
+.form li .unit {
+    float:left;
+}
+
+.form li .unit input, .form li .unit label {
+    width: auto;
+    display: inline;
+    float: none;
+}
+
+.form li .unit label {
+    font-weight: normal;
+    padding-right: 20px;
+    margin: 0;
+}
+
+.form li button {
+    margin-left: 100px;
+    float: left;
+    display: block;
+}

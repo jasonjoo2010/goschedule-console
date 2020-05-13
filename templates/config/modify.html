@@ -1,0 +1,91 @@
+{{define "config/modify.html"}}
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Storage setting</title>
+<link rel="stylesheet" type="text/css" href="/css/common.css">
+<link rel="stylesheet" type="text/css" href="/css/settings.css">
+<script type="text/javascript" src="/js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery/form.js"></script>
+</head>
+<body>
+{{template "header.html" .}}
+<div class="container">
+<form action="save" method="post" id="frmSettings">
+    <input type="hidden" name="test" value="0" />
+    <div class="form">
+        <h2>Storage Settings</h2>
+        <li>
+            <label for="selType">Type: </label>
+            <div class="unit">
+                <input id="typeMemory" type="radio" name="type" value="memory" /><label for="typeMemory">Memory</label>
+                <input id="typeRedis" type="radio" name="type" value="redis" /><label for="typeRedis">Redis</label>
+                <input id="typeZookeeper" type="radio" name="type" value="zookeeper" /><label for="typeZookeeper">ZooKeeper</label>
+                <input id="typeMysql" type="radio" name="type" value="Mysql" /><label for="typeMysql">Mysql</label>
+            </div>
+        </li>
+        <li>
+            <label for="txtAddress">Adress: </label>
+            <input id="txtAddress" name="address" type="text" placeholder="eg. 192.168.0.1:2181" />
+        </li>
+        <li>
+            <label for="txtUsername">Username: </label>
+            <input id="txtUsername" name="username" type="text" placeholder="Can be empty if not necessary" />
+        </li>
+        <li>
+            <label for="txtPassword">Password: </label>
+            <input id="txtPassword" name="password" type="text" placeholder="Can be empty if not necessary" />
+        </li>
+        <li>
+            <label for="txtNamespace">Namespace: </label>
+            <input id="txtNamespace" name="namespace" type="text" placeholder="Better in the form /schedule/project/module" />
+        </li>
+        <li>
+            <button tpye="button" id="btnTest" class="btn">Test</button>
+            <button type="button" id="btnSubmit">Save</button>
+        </li>
+        <li id="tip"></li>
+    </div>
+</form>
+</div>
+<script>
+$(function() {
+
+$("input[name='type'][value='redis']").attr("checked", true);
+$("#frmSettings").ajaxForm({
+    success: function(data) {
+        $(".form button").attr("disabled", false);
+        if (data.errno == 0) {
+            $("#tip").removeClass("fail");
+            if (data.test) {
+                $("#tip").html("Test passed");
+            } else {
+                document.location.href = '/strategy/index';
+            }
+        } else {
+            $("#tip").html(data.errdesc);
+            $("#tip").addClass("fail");
+        }
+    }
+});
+$("#btnTest").click(function() {
+    $("#tip").html("Testing ...");
+    $(".form button").attr("disabled", true);
+    $("#frmSettings input[name='test']").val("1");
+    $("#frmSettings").submit();
+    return false;
+});
+$("#btnSubmit").click(function() {
+    $("#tip").html("Submiting ...");
+    $(".form button").attr("disabled", true);
+    $("#frmSettings input[name='test']").val("0");
+    $("#frmSettings").submit();
+    return false;
+});
+
+})
+</script>
+{{template "footer.html" .}}
+</body>
+</html>
+{{end}}

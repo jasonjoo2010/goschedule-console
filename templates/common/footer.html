@@ -1,0 +1,33 @@
+<div class="footer">
+
+<div class="left">
+    <ul>
+        <li class="title">Github</li>
+        <li><a target="_blank" href="https://github.com/jasonjoo2010/goschedule">goschedule</a></li>
+        <li><a target="_blank" href="https://github.com/jasonjoo2010/goschedule-dashboard">dashboard</a></li>
+    </ul>
+</div>
+
+<div class="left">
+    <ul>
+        <li>Copyright @2020</li>
+        <li>By jasonjoo2010</li>
+    </ul>
+</div>
+
+<div class="c"></div>
+
+</div>
+
+<script type="text/javascript">
+$(function() {
+
+var path = window.location.pathname;
+$(".navTop li a").each(function(i, o) {
+    if (o.href.indexOf(path) >= 0) {
+        $(o).parent().addClass("cur");
+    }
+});
+
+});
+</script>

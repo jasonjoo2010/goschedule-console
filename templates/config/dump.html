@@ -1,0 +1,17 @@
+{{define "config/dump.html"}}
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Storage Dumping</title>
+<link rel="stylesheet" type="text/css" href="/css/common.css">
+<link rel="stylesheet" type="text/css" href="/css/settings.css">
+</head>
+<body>
+{{template "header.html" .}}
+<div class="container">
+<pre>{{.content}}</pre>
+</div>
+{{template "footer.html" .}}
+</body>
+</html>
+{{end}}

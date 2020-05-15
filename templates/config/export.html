@@ -1,0 +1,18 @@
+{{define "config/export.html"}}
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Storage Export</title>
+<link rel="stylesheet" type="text/css" href="/css/common.css">
+<link rel="stylesheet" type="text/css" href="/css/settings.css">
+<script type="text/javascript" src="/js/jquery-1.9.1.min.js"></script>
+</head>
+<body>
+{{template "header.html" .}}
+<div class="container">
+<textarea rows="15" cols="100">{{.exported}}</textarea>
+</div>
+{{template "footer.html" .}}
+</body>
+</html>
+{{end}}

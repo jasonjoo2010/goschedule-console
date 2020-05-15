@@ -1,0 +1,13 @@
+@charset "utf-8";
+
+.stopped a {
+    color: green;
+}
+
+.running {
+    color: green;
+}
+
+.running a {
+    color: red;
+}

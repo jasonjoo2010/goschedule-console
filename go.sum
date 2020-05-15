@@ -41,6 +41,7 @@ github.com/golang/protobuf v1.3.3/go.mod h1:vzj43D7+SQXF/4pzW/hwtAqwc6iTitCiVSaW
 github.com/google/go-cmp v0.4.0 h1:xsAVV57WRhGj6kEIi8ReJzQlHHqcBYCElAvkovg3B/4=
 github.com/google/go-cmp v0.4.0/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/gofuzz v1.0.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=
+github.com/google/uuid v1.1.1 h1:Gkbcsh/GbpXz7lPftLA3P6TYMwjCLYm83jiFQZF/3gY=
 github.com/google/uuid v1.1.1/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/hpcloud/tail v1.0.0 h1:nfCOvKYfkgYP8hkirhJocXT2+zOD8yUNjXaWfTlyFKI=
 github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpOxQnU=
@@ -48,14 +49,10 @@ github.com/jasonjoo2010/enhanced-utils v0.0.0-20200415090139-0a0c720ec8f3 h1:ezM
 github.com/jasonjoo2010/enhanced-utils v0.0.0-20200415090139-0a0c720ec8f3/go.mod h1:u7jbH8cHV/qrM/1UuUtt++0AGthHQUWiNlYDbfJkCL8=
 github.com/jasonjoo2010/enhanced-utils/concurrent/distlock/redis v0.0.0-20200415090139-0a0c720ec8f3 h1:olAgkax3MCCFa7I3A48yvG8z9fcQM2WsJyDk7Kw4VbU=
 github.com/jasonjoo2010/enhanced-utils/concurrent/distlock/redis v0.0.0-20200415090139-0a0c720ec8f3/go.mod h1:LJ32Y+fITx+CIma9H5nvRSIEF5axlGRtHQFQnzKlZsM=
-github.com/jasonjoo2010/goschedule v0.0.0-20200513085115-9c644e984af0 h1:CRHcsYKwvyzfz6Tg3NxITZv+xYsYXY47FJSomvYDMWk=
-github.com/jasonjoo2010/goschedule v0.0.0-20200513085115-9c644e984af0/go.mod h1:B5C6eCjHnTlSAeSDy/gmWYVoVrxb9fkpHQ7hZBxQRsw=
-github.com/jasonjoo2010/goschedule v0.0.0-20200513093434-f38a95debd23 h1:4RkrbM5GrJ69rCA+Rua1iGtMgzBp0FQr6/uYR0qow10=
-github.com/jasonjoo2010/goschedule v0.0.0-20200513093434-f38a95debd23/go.mod h1:B5C6eCjHnTlSAeSDy/gmWYVoVrxb9fkpHQ7hZBxQRsw=
-github.com/jasonjoo2010/goschedule/store/redis v0.0.0-20200513085115-9c644e984af0 h1:s5Q/h+UfSnm3GVt2R/1qsFIEH5P34YuSGNLTf1ebuXw=
-github.com/jasonjoo2010/goschedule/store/redis v0.0.0-20200513085115-9c644e984af0/go.mod h1:90VCo3pQiTAw1pKflbdIPMh0jb6hFntTqmcrLMgc99U=
-github.com/jasonjoo2010/goschedule/store/redis v0.0.0-20200513093434-f38a95debd23 h1:FwsLsZG1aZdwM+4TmIU9hXS5zVkNim0hBijMQkcK/Vk=
-github.com/jasonjoo2010/goschedule/store/redis v0.0.0-20200513093434-f38a95debd23/go.mod h1:90VCo3pQiTAw1pKflbdIPMh0jb6hFntTqmcrLMgc99U=
+github.com/jasonjoo2010/goschedule v0.0.0-20200515062516-e0965b5328af h1:QPgR03q3A3vZWHO8CbtCLy4CRs2zxORkK56mk/0fZlQ=
+github.com/jasonjoo2010/goschedule v0.0.0-20200515062516-e0965b5328af/go.mod h1:r1Uf8gEW3gsu5KT88eGLxlKIzKL94kk8zNUHgJkTF94=
+github.com/jasonjoo2010/goschedule/store/redis v0.0.0-20200515062516-e0965b5328af h1:pyzlQedlJC/2z7Hz/16RtNxrAzXfz9VU0ak33RLToJ8=
+github.com/jasonjoo2010/goschedule/store/redis v0.0.0-20200515062516-e0965b5328af/go.mod h1:PAnnOODpWX6M8sc5MXV2whRoG9h8qCYghdOLBf5RqBU=
 github.com/json-iterator/go v1.1.6/go.mod h1:+SdeFBvtyEkXs7REEP0seUULqWtbJapLOCVDaaPEHmU=
 github.com/json-iterator/go v1.1.9 h1:9yzud/Ht36ygwatGx56VwCZtlI/2AD15T1X2sjSuGns=
 github.com/json-iterator/go v1.1.9/go.mod h1:KdQUCv79m/52Kvf8AW2vK1V8akMuk1QjK/uOdHXbAo4=
@@ -104,6 +101,7 @@ github.com/prometheus/common v0.9.1 h1:KOMtN28tlbam3/7ZKEYKHhKoJZYYj3gMH4uc62x7X
 github.com/prometheus/common v0.9.1/go.mod h1:yhUN8i9wzaXS3w1O07YhxHEBxD+W35wd8bs7vj7HSQ4=
 github.com/prometheus/procfs v0.0.0-20181005140218-185b4288413d/go.mod h1:c3At6R/oaqEKCNdg8wHV1ftS6bRYblBhIjjI8uT2IGk=
 github.com/prometheus/procfs v0.0.2/go.mod h1:TjEm7ze935MbeOT/UhFTIMYKhuLP4wbCsTZCD3I8kEA=
+github.com/robfig/cron/v3 v3.0.0/go.mod h1:eQICP3HwyT7UooqI/z+Ov+PtYAWygg1TEWWzGIFLtro=
 github.com/sirupsen/logrus v1.2.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPxbbu5VWo=
 github.com/sirupsen/logrus v1.4.2/go.mod h1:tLMulIdttU9McNUspp0xgXVQah82FyeX6MwdIuYE2rE=
 github.com/sirupsen/logrus v1.6.0 h1:UBcNElsrwanuuMsnGSlYmtmgbb23qDR5dG+6X6Oo89I=

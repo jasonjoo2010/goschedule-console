@@ -65,6 +65,7 @@ a:hover {
 
 .navTop {
     height: 28px;
+    margin-left: 10px;
     padding-bottom: 15px;
 }
 
@@ -117,7 +118,7 @@ a:hover {
 
 .form li {
     line-height: 40px;
-    height: 50px;
+    min-height: 50px;
 }
 
 .form li label {
@@ -173,4 +174,36 @@ a:hover {
     margin-left: 100px;
     float: left;
     display: block;
+}
+
+.form .tip {
+    padding-left: 10px;
+    color: #333;
+}
+
+.form .fail {
+    color: red!important;
+}
+
+
+table {
+    border-collapse: collapse;
+}
+
+table thead th {
+    background: #E4EFF1;
+    color: #5371BA;
+    font-size: 14px;
+    padding: 3px 10px;
+    border: #8CB2E3 solid 1px;
+}
+
+table tbody td {
+    padding: 3px 10px;
+    font-size: 12px;
+    border: #8CB2E3 solid 1px;
+}
+
+table tbody td a {
+    padding: 0 5px;
 }

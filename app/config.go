@@ -28,13 +28,9 @@ func parseConfig(filepath string) (*types.DashboardConfig, error) {
 	return &conf, nil
 }
 
-func (app *App) GetConfig() *types.DashboardConfig {
-	return app.conf
-}
-
 func (app *App) UpdateStorageConfig(s types.Storage) error {
-	app.conf.Storage = s
-	data, err := yaml.Marshal(&app.conf)
+	app.Conf.Storage = s
+	data, err := yaml.Marshal(&app.Conf)
 	if err != nil {
 		return err
 	}
@@ -59,11 +55,11 @@ func (app *App) ReloadConfig() error {
 	if !types.VerifyStorage(conf.Storage) {
 		return errors.New("Parse storage configuration failed")
 	}
-	app.conf = conf
-	if app.store != nil {
-		app.store.Close()
-		app.store = nil
+	app.Conf = conf
+	if app.Store != nil {
+		app.Store.Close()
+		app.Store = nil
 	}
-	app.store = utils.CreateStore(app.conf.Storage)
+	app.Store = utils.CreateStore(app.Conf.Storage)
 	return nil
 }

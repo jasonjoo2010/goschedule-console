@@ -14,8 +14,8 @@ var (
 
 type App struct {
 	confFile string
-	conf     *types.DashboardConfig
-	store    store.Store
+	Conf     *types.DashboardConfig
+	Store    store.Store
 }
 
 func Instance() *App {

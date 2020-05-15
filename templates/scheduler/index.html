@@ -1,0 +1,78 @@
+{{define "scheduler/index.html"}}
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Schedulers</title>
+<link rel="stylesheet" type="text/css" href="/css/common.css">
+<link rel="stylesheet" type="text/css" href="/css/scheduler.css">
+<script type="text/javascript" src="/js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery/form.js"></script>
+</head>
+<body>
+{{template "header.html" .}}
+<div class="container">
+<table>
+    <thead>
+        <tr>
+            <th>NO</th>
+            <th>Operation</th>
+            <th>ID</th>
+            <th>Status</th>
+            <th>Heartbeat</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{range $i, $s := .schedulers}}
+        {{if $s.Enabled}}
+        <tr class="running">
+        {{else}}
+        <tr class="stopped">
+        {{end}}
+            <td>{{add $i 1}}</td>
+            <td>
+                {{if $s.Enabled}}
+                <a class="btnControl" href="javascript:void(0)" data-cmd="stop">Stop</a>
+                {{else}}
+                <a class="btnControl" href="javascript:void(0)" data-cmd="start">Start</a>
+                {{end}}
+            </td>
+            <td>{{$s.Id}}</td>
+            <td>{{if $s.Enabled}}Running{{else}}Stopped{{end}}</td>
+            <td>{{timestampMillis $s.LastHeartbeat}}</td>
+        </tr>
+        {{end}}
+    </tbody>
+</table>
+</div>
+<script>
+$(function() {
+
+var PATTERN_ID = /^([^$]+\$[^$]+\$[^$]{3})[^$]+([^$]{3}\$[^$]+)$/;
+var clickCallback = function(data) {
+    if (data.errno == 0) {
+        document.location.reload();
+    } else {
+        alert(data.errdesc);
+    }
+};
+$(".btnControl").click(function() {
+    var $this = $(this);
+    var $row = $this.parents("tr");
+    var id = $row.find("td:eq(2)").text();
+    var cmd = $this.data("cmd");
+    if (cmd == 'start') {
+        $.getJSON('start?id=' + encodeURIComponent(id), clickCallback);
+    } else {
+        if (!confirm('Sure to stop ' + id.replace(PATTERN_ID, "$1...$2") + '?')) {
+            return false;
+        }
+        $.getJSON('stop?id=' + encodeURIComponent(id), clickCallback);
+    }
+});
+
+})
+</script>
+{{template "footer.html" .}}
+</body>
+</html>
+{{end}}

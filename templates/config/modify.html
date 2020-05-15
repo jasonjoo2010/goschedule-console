@@ -26,57 +26,57 @@
         </li>
         <li>
             <label for="txtAddress">Adress: </label>
-            <input id="txtAddress" name="address" type="text" placeholder="eg. 192.168.0.1:2181" />
+            <input id="txtAddress" name="address" type="text" value="{{ .addr }}" placeholder="eg. 192.168.0.1:2181" />
         </li>
         <li>
             <label for="txtUsername">Username: </label>
-            <input id="txtUsername" name="username" type="text" placeholder="Can be empty if not necessary" />
+            <input id="txtUsername" name="username" type="text" value="{{ .username }}" placeholder="Can be empty if not necessary" />
         </li>
         <li>
             <label for="txtPassword">Password: </label>
-            <input id="txtPassword" name="password" type="text" placeholder="Can be empty if not necessary" />
+            <input id="txtPassword" name="password" type="text" value="{{ .password }}" placeholder="Can be empty if not necessary" />
         </li>
         <li>
             <label for="txtNamespace">Namespace: </label>
-            <input id="txtNamespace" name="namespace" type="text" placeholder="Better in the form /schedule/project/module" />
+            <input id="txtNamespace" name="namespace" type="text" value="{{ .namespace }}" placeholder="Better in the form /schedule/project/module" />
         </li>
         <li>
             <button tpye="button" id="btnTest" class="btn">Test</button>
             <button type="button" id="btnSubmit">Save</button>
         </li>
-        <li id="tip"></li>
+        <li class="tip"></li>
     </div>
 </form>
 </div>
 <script>
 $(function() {
 
-$("input[name='type'][value='redis']").attr("checked", true);
+$("input[name='type'][value='{{ .type }}']").attr("checked", true);
 $("#frmSettings").ajaxForm({
     success: function(data) {
         $(".form button").attr("disabled", false);
         if (data.errno == 0) {
-            $("#tip").removeClass("fail");
+            $(".tip").removeClass("fail");
             if (data.test) {
-                $("#tip").html("Test passed");
+                $(".tip").html("Test passed");
             } else {
                 document.location.href = '/strategy/index';
             }
         } else {
-            $("#tip").html(data.errdesc);
-            $("#tip").addClass("fail");
+            $(".tip").html(data.errdesc);
+            $(".tip").addClass("fail");
         }
     }
 });
 $("#btnTest").click(function() {
-    $("#tip").html("Testing ...");
+    $(".tip").html("Testing ...");
     $(".form button").attr("disabled", true);
     $("#frmSettings input[name='test']").val("1");
     $("#frmSettings").submit();
     return false;
 });
 $("#btnSubmit").click(function() {
-    $("#tip").html("Submiting ...");
+    $(".tip").html("Submiting ...");
     $(".form button").attr("disabled", true);
     $("#frmSettings input[name='test']").val("0");
     $("#frmSettings").submit();

@@ -1,0 +1,173 @@
+{{define "strategy/index.html"}}
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Strategies</title>
+<link rel="stylesheet" type="text/css" href="/css/common.css">
+<link rel="stylesheet" type="text/css" href="/css/strategy.css">
+<script type="text/javascript" src="/js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery/form.js"></script>
+</head>
+<body>
+{{template "header.html" .}}
+<div class="container">
+<table>
+    <thead>
+        <tr>
+            <th>NO</th>
+            <th>Operation</th>
+            <th>ID</th>
+            <th>Status</th>
+            <th>Limit/Total</th>
+            <th>Target</th>
+            <th>Kind</th>
+            <th>Bind</th>
+            <th>Parameter</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{range $i, $s := .strategies}}
+        <tr>
+            <td>{{add $i 1}}</td>
+            <td>
+                <a class="btnEdit" href="javascript:void(0)">Edit</a>
+                <a class="btnRemove" href="javascript:void(0)">Remove</a>
+                {{if $s.Enabled}}
+                <a class="btnControl" href="javascript:void(0)" data-cmd="pause">Pause</a>
+                {{else}}
+                <a class="btnControl" href="javascript:void(0)" data-cmd="resume">Resume</a>
+                {{end}}
+            </td>
+            <td>{{$s.Id}}</td>
+            <td>{{if $s.Enabled}}Normal{{else}}Disabled{{end}}</td>
+            <td>{{$s.MaxOnSingleScheduler}}/{{$s.Total}}</td>
+            <td>
+                {{range $i, $ip := $s.IpList}}
+                    {{if gt $i 0}}<br />{{end}}
+                    {{$ip}}
+                {{end}}
+            </td>
+            <td>
+                {{if eq $s.Kind 1}}Simple{{end}}
+                {{if eq $s.Kind 2}}Func{{end}}
+                {{if eq $s.Kind 3}}Task{{end}}
+            </td>
+            <td>{{$s.Bind}}</td>
+            <td>{{$s.Parameter}}</td>
+        </tr>
+        {{end}}
+    </tbody>
+</table>
+<div class="frmCreate">
+    <a class="create" href="javascript:void(0)">Create Strategy</a>
+    <form action="create" method="post">
+    <div class="form">
+        <li>
+            <label for="txtId">ID: </label>
+            <input id="txtId" name="id" type="text" placeholder="eg. RecycleHistoryStrategy" />
+        </li>
+        <li>
+            <label for="selKind">Kind: </label>
+            <div class="unit">
+                <input id="kindSimple" type="radio" name="kind" value="simple" checked /><label for="kindSimple">Simple</label>
+                <input id="kindFunc" type="radio" name="kind" value="func" /><label for="kindFunc">Func</label>
+            </div>
+        </li>
+        <li>
+            <label for="txtBind">Bind: </label>
+            <input id="txtBind" name="bind" type="text" placeholder="According to Kind" />
+            <div class="hint">
+            </div>
+        </li>
+        <li>
+            <label for="txtLimit">Limit: </label>
+            <input id="txtLimit" name="limit" type="text" value="0" />
+            <div class="hint">
+                How many workers can be created on same scheduler(node).<br />
+                Zero for unlimited.
+            </div>
+        </li>
+        <li>
+            <label for="txtTotal">Total: </label>
+            <input id="txtTotal" name="total" type="text" value="1" />
+        </li>
+        <li>
+            <label for="txtParameter">Parameter: </label>
+            <input id="txtParameter" name="parameter" type="text" />
+        </li>
+        <li>
+            <label for="txtTarget">Target: </label>
+            <input id="txtTarget" name="target" type="text" value="127.0.0.1" />
+            <div class="hint">
+                Target represents which node/nodes can be scheduled on for this strategy.<br />
+                Target can be <b>hostname</b> or <b>ip</b>. And they can be inferred from column <b>ID</b> of <a href="scheduler/index" target="_blank">Schedulers</a> page.<br />
+                If they don't make sense maybe you should make sure that hostname is resolved correctly(eg. /etc/hosts).<br />
+                Multiple values can be separated using comma(<b>,</b>).<br />
+                <b>127.0.0.1</b> or <b>localhost</b> for unlimited.
+            </div>
+        </li>
+        <li>
+            <button type="submit" id="btnSubmit">Submit</button>
+        </li>
+        <li class="tip"></li>
+    </div>
+    </form>
+</div>
+
+</div>
+<script>
+$(function() {
+
+$(".frmCreate .create").click(function() {
+    var $form = $(".frmCreate .form");
+    if ($form.css('display') == 'none') {
+        $form.show(100);
+    } else {
+        $form.hide(100);
+    }
+});
+$(".frmCreate form").ajaxForm({
+    beforeSerialize: function(data) {
+        $(".tip").removeClass("fail");
+        $(".tip").html("Submitting");
+    },
+    success: function(data) {
+        if (data.errno == 0) {
+            document.location.reload();
+        } else {
+            $(".tip").html(data.errdesc);
+            $(".tip").addClass("fail");
+        }
+    }
+});
+var clickCallback = function(data) {
+    if (data.errno == 0) {
+        document.location.reload();
+    } else {
+        alert(data.errdesc);
+    }
+};
+$(".btnControl").click(function() {
+    var $this = $(this);
+    var $row = $this.parents("tr");
+    var id = $row.find("td:eq(2)").text();
+    var cmd = $this.data("cmd");
+    if (cmd == 'resume') {
+        if (!confirm('Sure to resume strategy "' + id + '"?')) {
+            return false;
+        }
+        $.getJSON('resume?id=' + encodeURIComponent(id), clickCallback);
+    } else {
+        if (!confirm('Sure to pause strategy "' + id + '"?')) {
+            return false;
+        }
+        $.getJSON('pause?id=' + encodeURIComponent(id), clickCallback);
+    }
+});
+
+})
+</script>
+{{template "footer.html" .}}
+</body>
+</html>
+{{end}}

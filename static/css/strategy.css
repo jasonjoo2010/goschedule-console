@@ -1,0 +1,20 @@
+@charset "utf-8";
+
+.frmCreate {
+    margin: 10px 0;
+}
+
+.frmCreate .form {
+    display: none;
+}
+
+.form .hint {
+    clear: both;
+    margin-left: 130px;
+    font-size: 13px;
+    line-height: 20px;
+}
+
+.form .hint b {
+    color: #492676;
+}

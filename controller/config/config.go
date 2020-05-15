@@ -60,7 +60,12 @@ func saveHandler(c *gin.Context) {
 }
 
 func modifyHandler(c *gin.Context) {
+	conf := app.Instance().Conf.Storage
 	c.HTML(http.StatusOK, "config/modify.html", controller.DataWithSession(gin.H{
-		"addr": "ip:port",
+		"addr":      conf.Address,
+		"type":      conf.Type,
+		"username":  conf.Username,
+		"password":  conf.Password,
+		"namespace": conf.Namespace,
 	}))
 }

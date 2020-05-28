@@ -24,6 +24,7 @@ func Init(engine *gin.Engine) {
 	group.GET("/resume", resumeHandler)
 	group.POST("/save", saveHandler)
 	group.GET("/remove", removeHandler)
+	group.GET("/info", infoHandler)
 }
 
 func indexHandler(c *gin.Context) {
@@ -48,6 +49,23 @@ func getHandler(c *gin.Context) {
 		return
 	}
 	resp["strategy"] = strategy
+}
+
+func infoHandler(c *gin.Context) {
+	resp := types.NewEmptyResponse()
+	defer c.JSON(200, resp)
+	id := c.Query("id")
+	if id == "" {
+		resp.Err(1, "No strategy specified")
+		return
+	}
+	s := app.Instance().Store
+	runtimes, err := s.GetStrategyRuntimes(id)
+	if err != nil {
+		resp.Err(2, err.Error())
+		return
+	}
+	resp["runtimes"] = runtimes
 }
 
 func removeHandler(c *gin.Context) {

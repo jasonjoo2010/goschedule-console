@@ -198,6 +198,10 @@ table thead th {
     border: #8CB2E3 solid 1px;
 }
 
+table tbody tr.selected {
+    background-color: #dfc427;
+}
+
 table tbody td {
     padding: 3px 10px;
     font-size: 12px;

@@ -11,7 +11,7 @@
 <body>
 {{template "header.html" .}}
 <div class="container">
-<table>
+<table id="strategyList">
     <thead>
         <tr>
             <th>NO</th>
@@ -27,7 +27,7 @@
     </thead>
     <tbody>
         {{range $i, $s := .strategies}}
-        <tr{{if not $s.Enabled}} class="stopped"{{end}}>
+        <tr data-id="{{$s.Id}}" {{if not $s.Enabled}} class="stopped"{{end}}>
             <td>{{add $i 1}}</td>
             <td>
                 <a class="btnEdit" href="javascript:void(0)" data-id="{{$s.Id}}">Edit</a>
@@ -59,6 +59,19 @@
         </tr>
         {{end}}
     </tbody>
+</table>
+<table id="runtimeList" style="margin: 20px 0;">
+    <thead>
+        <tr>
+            <th>NO</th>
+            <th>StrategyId</th>
+            <th>SchedulerId</th>
+            <th>Num</th>
+            <th>RequestedNum</th>
+            <th>CreateAt</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
 </table>
 <div class="frmCreate">
     <a class="create" href="javascript:void(0)">Create Strategy</a>
@@ -172,6 +185,7 @@ $(".btnControl").click(function() {
         }
         $.getJSON('pause?id=' + encodeURIComponent(id), clickCallback);
     }
+    return false;
 });
 $(".btnRemove").click(function() {
     var $this = $(this);
@@ -186,6 +200,7 @@ $(".btnRemove").click(function() {
             alert(data.errdesc);
         }
     });
+    return false;
 });
 function updateForm(obj) {
     var $form = $(".frmCreate form");
@@ -223,7 +238,39 @@ $(".btnEdit").click(function() {
             alert(data.errdesc);
         }
     });
+    return false;
 })
+$("#strategyList tbody tr").click(function() {
+    var $this = $(this);
+    if ($this.hasClass("stopped")) {
+        return false;
+    }
+    if (!$this.hasClass("selected")) {
+        $this.parent().find(".selected").removeClass("selected");
+        $this.addClass("selected");
+    }
+    var id = $this.data("id");
+    $.getJSON("info?id=" + encodeURIComponent(id), function(data) {
+        if (data.errno != 0) {
+            alert(data.errdesc);
+            return;
+        }
+        var $tbody = $("#runtimeList tbody");
+        var html = '';
+        for (var i = 0; i < data.runtimes.length; i ++) {
+            var created = new Date(data.runtimes[i].CreateAt)
+            html += '<tr>';
+            html += '<td>' + (i + 1) + '</td>';
+            html += '<td>' + data.runtimes[i].StrategyId + '</td>';
+            html += '<td>' + data.runtimes[i].SchedulerId + '</td>';
+            html += '<td>' + data.runtimes[i].Num + '</td>';
+            html += '<td>' + data.runtimes[i].RequestedNum + '</td>';
+            html += '<td>' + created.getFullYear() + "-" + (created.getMonth() + 1) + "-" + created.getDate() + " " + created.getHours() + ":" + created.getMinutes() + created.getSeconds() + '</td>';
+            html += '</tr>';
+        }
+        $tbody.html(html);
+    });
+});
 
 })
 </script>

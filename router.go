@@ -8,6 +8,7 @@ import (
 	"github.com/jasonjoo2010/goschedule-console/controller/config"
 	"github.com/jasonjoo2010/goschedule-console/controller/scheduler"
 	"github.com/jasonjoo2010/goschedule-console/controller/strategy"
+	"github.com/jasonjoo2010/goschedule-console/controller/task"
 )
 
 func add(numbers ...interface{}) interface{} {
@@ -111,5 +112,6 @@ func InitEngine() *gin.Engine {
 	config.Init(engine)
 	strategy.Init(engine)
 	scheduler.Init(engine)
+	task.Init(engine)
 	return engine
 }

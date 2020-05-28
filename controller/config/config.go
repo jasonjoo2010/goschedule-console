@@ -15,6 +15,7 @@ import (
 
 const (
 	PREFIX_STRATEGY = "Strategy:"
+	PREFIX_TASK     = "Task:"
 )
 
 func Init(engine *gin.Engine) {
@@ -89,15 +90,21 @@ func dumpHandler(c *gin.Context) {
 
 func exportHandler(c *gin.Context) {
 	store := app.Instance().Store
-	strategies, _ := store.GetStrategies()
 	b := &strings.Builder{}
+	strategies, _ := store.GetStrategies()
 	for _, s := range strategies {
 		b.WriteString("Strategy:")
 		data, _ := json.Marshal(s)
 		b.Write(data)
 		b.WriteString("\n")
 	}
-	// TODO tasks
+	tasks, _ := store.GetTasks()
+	for _, s := range tasks {
+		b.WriteString("Task:")
+		data, _ := json.Marshal(s)
+		b.Write(data)
+		b.WriteString("\n")
+	}
 	c.HTML(http.StatusOK, "config/export.html", controller.DataWithSession(gin.H{
 		"exported": b.String(),
 	}))
@@ -107,8 +114,9 @@ func importHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "config/import.html", controller.DataWithSession(gin.H{}))
 }
 
-func parseImportContent(content string) []*definition.Strategy {
+func parseImportContent(content string) ([]*definition.Strategy, []*definition.Task) {
 	strategies := make([]*definition.Strategy, 0, 2)
+	tasks := make([]*definition.Task, 0, 2)
 	lines := strings.Split(content, "\n")
 	for _, line := range lines {
 		if line == "" {
@@ -122,10 +130,20 @@ func parseImportContent(content string) []*definition.Strategy {
 			if err != nil {
 				continue
 			}
+			strategy.Enabled = false
 			strategies = append(strategies, &strategy)
+		} else if strings.Index(line, PREFIX_TASK) == 0 {
+			// task
+			jsonStr := line[len(PREFIX_TASK):]
+			task := definition.Task{}
+			err := json.Unmarshal([]byte(jsonStr), &task)
+			if err != nil {
+				continue
+			}
+			tasks = append(tasks, &task)
 		}
 	}
-	return strategies
+	return strategies, tasks
 }
 
 func importSaveHandler(c *gin.Context) {
@@ -136,9 +154,11 @@ func importSaveHandler(c *gin.Context) {
 		msg.Err(1, "Empty importing content")
 		return
 	}
-	strategies := parseImportContent(content)
+	strategies, tasks := parseImportContent(content)
 	strategiesTotal := len(strategies)
 	strategiesSuccess := 0
+	tasksTotal := len(tasks)
+	tasksSuccess := 0
 	store := app.Instance().Store
 	for _, strategy := range strategies {
 		s, _ := store.GetStrategy(strategy.Id)
@@ -151,6 +171,19 @@ func importSaveHandler(c *gin.Context) {
 		}
 		strategiesSuccess++
 	}
+	for _, task := range tasks {
+		s, _ := store.GetTask(task.Id)
+		if s != nil {
+			continue
+		}
+		err := store.CreateTask(task)
+		if err != nil {
+			continue
+		}
+		tasksSuccess++
+	}
 	msg["strategiesTotal"] = strategiesTotal
 	msg["strategiesSuccess"] = strategiesSuccess
+	msg["tasksTotal"] = tasksTotal
+	msg["tasksSuccess"] = tasksSuccess
 }

@@ -27,15 +27,15 @@
     </thead>
     <tbody>
         {{range $i, $s := .strategies}}
-        <tr>
+        <tr{{if not $s.Enabled}} class="stopped"{{end}}>
             <td>{{add $i 1}}</td>
             <td>
-                <a class="btnEdit" href="javascript:void(0)">Edit</a>
-                <a class="btnRemove" href="javascript:void(0)">Remove</a>
+                <a class="btnEdit" href="javascript:void(0)" data-id="{{$s.Id}}">Edit</a>
+                <a class="btnRemove" href="javascript:void(0)" data-id="{{$s.Id}}">Remove</a>
                 {{if $s.Enabled}}
                 <a class="btnControl" href="javascript:void(0)" data-cmd="pause">Pause</a>
                 {{else}}
-                <a class="btnControl" href="javascript:void(0)" data-cmd="resume">Resume</a>
+                <a class="btnControl resume" href="javascript:void(0)" data-cmd="resume">Resume</a>
                 {{end}}
             </td>
             <td>{{$s.Id}}</td>
@@ -52,7 +52,9 @@
                 {{if eq $s.Kind 2}}Func{{end}}
                 {{if eq $s.Kind 3}}Task{{end}}
             </td>
-            <td>{{$s.Bind}}</td>
+            <td>
+                {{$s.Bind}}
+            </td>
             <td>{{$s.Parameter}}</td>
         </tr>
         {{end}}
@@ -71,6 +73,7 @@
             <div class="unit">
                 <input id="kindSimple" type="radio" name="kind" value="simple" checked /><label for="kindSimple">Simple</label>
                 <input id="kindFunc" type="radio" name="kind" value="func" /><label for="kindFunc">Func</label>
+                <input id="kindTask" type="radio" name="kind" value="task" /><label for="kindTask">Task</label>
             </div>
         </li>
         <li>
@@ -94,6 +97,9 @@
         <li>
             <label for="txtParameter">Parameter: </label>
             <input id="txtParameter" name="parameter" type="text" />
+            <div class="hint">
+                No effect to <b>Task</b>. Parameter in definition of task replaces it.
+            </div>
         </li>
         <li>
             <label for="txtTarget">Target: </label>
@@ -108,6 +114,7 @@
         </li>
         <li>
             <button type="submit" id="btnSubmit">Submit</button>
+            <button type="button" id="btnCancel">Cancel</button>
         </li>
         <li class="tip"></li>
     </div>
@@ -120,11 +127,13 @@ $(function() {
 
 $(".frmCreate .create").click(function() {
     var $form = $(".frmCreate .form");
-    if ($form.css('display') == 'none') {
-        $form.show(100);
-    } else {
-        $form.hide(100);
-    }
+    $(".frmCreate form")[0].reset();
+    $form.find("[name='id']").attr("readonly", false);
+    $(".frmCreate form").attr("action", "create");
+    $form.show(100);
+});
+$("#btnCancel").click(function() {
+    $(".frmCreate .form").hide(100);
 });
 $(".frmCreate form").ajaxForm({
     beforeSerialize: function(data) {
@@ -164,6 +173,57 @@ $(".btnControl").click(function() {
         $.getJSON('pause?id=' + encodeURIComponent(id), clickCallback);
     }
 });
+$(".btnRemove").click(function() {
+    var $this = $(this);
+    var id = $this.data("id");
+    if (!confirm("Confirm to remove strategy [" + id + "]?")) {
+        return false;
+    }
+    $.getJSON('remove?id=' + encodeURIComponent(id), function(data) {
+        if (data.errno == 0) {
+            document.location.reload();
+        } else {
+            alert(data.errdesc);
+        }
+    });
+});
+function updateForm(obj) {
+    var $form = $(".frmCreate form");
+    $form.find("[name='id']").val(obj.Id);
+    $form.find("[name='id']").attr("readonly", true);
+    switch (obj.Kind) {
+        case 2:
+            // func
+            $form.find("[name='kind'][value='func']").click();
+            break;
+        case 3:
+            // task
+            $form.find("[name='kind'][value='task']").click();
+            break;
+        default:
+            // simple
+            $form.find("[name='kind'][value='simple']").click();
+            break;
+    }
+    $form.find("[name='bind']").val(obj.Bind);
+    $form.find("[name='limit']").val(obj.MaxOnSingleScheduler);
+    $form.find("[name='total']").val(obj.Total);
+    $form.find("[name='parameter']").val(obj.Parameter);
+    $form.find("[name='target']").val(obj.IpList.join(","));
+    $form.attr("action", "save");
+    $(".frmCreate .form").show(100);
+}
+$(".btnEdit").click(function() {
+    var $this = $(this);
+    var id = $this.data("id");
+    $.getJSON('get?id=' + encodeURIComponent(id), function(data) {
+        if (data.errno == 0) {
+            updateForm(data.strategy);
+        } else {
+            alert(data.errdesc);
+        }
+    });
+})
 
 })
 </script>

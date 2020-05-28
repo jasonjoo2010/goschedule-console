@@ -1,0 +1,71 @@
+@charset "utf-8";
+
+.frmCreate {
+    margin: 10px 0;
+}
+
+.frmCreate .form {
+    display: none;
+}
+
+.form .hint {
+    clear: both;
+    margin-left: 190px;
+    font-size: 13px;
+    line-height: 20px;
+    margin-bottom: 10px;
+}
+
+.form .hint b {
+    color: #492676;
+}
+
+.form .hint .quote {
+    border: 1px solid #222;
+    line-height: 30px;
+    padding: 4px 10px;
+}
+
+.form .append {
+    width: auto;
+    margin: 13px 10px 0 20px;
+}
+
+.form label {
+    width: 180px!important;
+}
+
+.form label.chk {
+    width: auto!important;
+    font-weight: normal;
+}
+
+.form button {
+    margin-top: 20px;
+    margin-left: 190px!important;
+}
+
+.form textarea {
+    width: 500px;
+    height: 100px;
+}
+
+table tbody .items {
+    margin: 3px;
+    min-width: 100px;
+    max-height: 80px;
+    overflow-y: auto;
+    line-height: 18px;
+}
+
+table tbody .items label {
+    font-weight: bold;
+    color: #770049;
+    padding-right: 6px;
+}
+
+#btnCancel {
+    background: #eee;
+    color: #222;
+    border-color: #444;
+}

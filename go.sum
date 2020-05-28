@@ -49,10 +49,10 @@ github.com/jasonjoo2010/enhanced-utils v0.0.0-20200415090139-0a0c720ec8f3 h1:ezM
 github.com/jasonjoo2010/enhanced-utils v0.0.0-20200415090139-0a0c720ec8f3/go.mod h1:u7jbH8cHV/qrM/1UuUtt++0AGthHQUWiNlYDbfJkCL8=
 github.com/jasonjoo2010/enhanced-utils/concurrent/distlock/redis v0.0.0-20200415090139-0a0c720ec8f3 h1:olAgkax3MCCFa7I3A48yvG8z9fcQM2WsJyDk7Kw4VbU=
 github.com/jasonjoo2010/enhanced-utils/concurrent/distlock/redis v0.0.0-20200415090139-0a0c720ec8f3/go.mod h1:LJ32Y+fITx+CIma9H5nvRSIEF5axlGRtHQFQnzKlZsM=
-github.com/jasonjoo2010/goschedule v0.0.0-20200515073737-153eda103664 h1:XaGmOJUfe3/2Mwjoo+4smL2AOrbSXNmPbxg871vt3/0=
-github.com/jasonjoo2010/goschedule v0.0.0-20200515073737-153eda103664/go.mod h1:q/tMZeDbrYyA/x8yT/nSZ130IcWCYa7hzopL7ORGiis=
-github.com/jasonjoo2010/goschedule/store/redis v0.0.0-20200515073737-153eda103664 h1:AtNKCeyYNsXivcMeuNqMS5QkK71ILxRyut1Y8htuIg4=
-github.com/jasonjoo2010/goschedule/store/redis v0.0.0-20200515073737-153eda103664/go.mod h1:PAnnOODpWX6M8sc5MXV2whRoG9h8qCYghdOLBf5RqBU=
+github.com/jasonjoo2010/goschedule v0.0.0-20200528085553-cf2b5ec25568 h1:T/dWzf00UnLCRFoiRC9iFVALMvnACkeBV0dSx73+DQM=
+github.com/jasonjoo2010/goschedule v0.0.0-20200528085553-cf2b5ec25568/go.mod h1:XHhgvjbfsQhdlz29+8LjzfOSiRlKXVKRniZnibvbZkc=
+github.com/jasonjoo2010/goschedule/store/redis v0.0.0-20200528085553-cf2b5ec25568 h1:YbTDFBhdFGojOlWTN+Qr5JQkIBZ5GKLpkGfMRHB7txE=
+github.com/jasonjoo2010/goschedule/store/redis v0.0.0-20200528085553-cf2b5ec25568/go.mod h1:PAnnOODpWX6M8sc5MXV2whRoG9h8qCYghdOLBf5RqBU=
 github.com/json-iterator/go v1.1.6/go.mod h1:+SdeFBvtyEkXs7REEP0seUULqWtbJapLOCVDaaPEHmU=
 github.com/json-iterator/go v1.1.9 h1:9yzud/Ht36ygwatGx56VwCZtlI/2AD15T1X2sjSuGns=
 github.com/json-iterator/go v1.1.9/go.mod h1:KdQUCv79m/52Kvf8AW2vK1V8akMuk1QjK/uOdHXbAo4=
@@ -101,6 +101,7 @@ github.com/prometheus/common v0.9.1 h1:KOMtN28tlbam3/7ZKEYKHhKoJZYYj3gMH4uc62x7X
 github.com/prometheus/common v0.9.1/go.mod h1:yhUN8i9wzaXS3w1O07YhxHEBxD+W35wd8bs7vj7HSQ4=
 github.com/prometheus/procfs v0.0.0-20181005140218-185b4288413d/go.mod h1:c3At6R/oaqEKCNdg8wHV1ftS6bRYblBhIjjI8uT2IGk=
 github.com/prometheus/procfs v0.0.2/go.mod h1:TjEm7ze935MbeOT/UhFTIMYKhuLP4wbCsTZCD3I8kEA=
+github.com/robfig/cron/v3 v3.0.0 h1:kQ6Cb7aHOHTSzNVNEhmp8EcWKLb4CbiMW9h9VyIhO4E=
 github.com/robfig/cron/v3 v3.0.0/go.mod h1:eQICP3HwyT7UooqI/z+Ov+PtYAWygg1TEWWzGIFLtro=
 github.com/sirupsen/logrus v1.2.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPxbbu5VWo=
 github.com/sirupsen/logrus v1.4.2/go.mod h1:tLMulIdttU9McNUspp0xgXVQah82FyeX6MwdIuYE2rE=

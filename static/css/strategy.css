@@ -13,8 +13,37 @@
     margin-left: 130px;
     font-size: 13px;
     line-height: 20px;
+    margin-bottom: 10px;
 }
 
 .form .hint b {
     color: #492676;
+}
+
+.form .append {
+    width: auto;
+    margin: 13px 10px 0 20px;
+}
+
+.form label.chk {
+    width: auto!important;
+    font-weight: normal;
+}
+
+table tr.stopped {
+    background-color: lightgray;
+}
+
+table .btnControl {
+    color: red;
+}
+
+table .resume {
+    color: green;
+}
+
+#btnCancel {
+    background: #eee;
+    color: #222;
+    border-color: #444;
 }

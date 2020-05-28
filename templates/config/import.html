@@ -33,6 +33,12 @@ $(".container form").ajaxForm({
             if (data.strategiesTotal == data.strategiesSuccess) {
                 msg += ", all done";
             }
+
+            msg += "\nFound " + data.tasksTotal + " task(s), ";
+            msg += "import " + data.tasksSuccess;
+            if (data.tasksTotal == data.tasksSuccess) {
+                msg += ", all done";
+            }
             alert(msg)
         } else {
             alert(data.errdesc);

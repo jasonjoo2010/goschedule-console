@@ -11,16 +11,19 @@ import (
 	"github.com/jasonjoo2010/goschedule-console/types"
 	"github.com/jasonjoo2010/goschedule-console/utils"
 	"github.com/jasonjoo2010/goschedule/core/definition"
+	storepkg "github.com/jasonjoo2010/goschedule/store"
 )
 
 func Init(engine *gin.Engine) {
 	group := engine.Group("/strategy")
 
 	group.GET("/index", indexHandler)
+	group.GET("/get", getHandler)
 	group.POST("/create", createHandler)
 	group.GET("/pause", pauseHandler)
 	group.GET("/resume", resumeHandler)
 	group.POST("/save", saveHandler)
+	group.GET("/remove", removeHandler)
 }
 
 func indexHandler(c *gin.Context) {
@@ -30,9 +33,41 @@ func indexHandler(c *gin.Context) {
 	}))
 }
 
-func createHandler(c *gin.Context) {
+func getHandler(c *gin.Context) {
 	resp := types.NewEmptyResponse()
 	defer c.JSON(200, resp)
+	id := c.Query("id")
+	if id == "" {
+		resp.Err(1, "No strategy specified")
+		return
+	}
+	s := app.Instance().Store
+	strategy, err := s.GetStrategy(id)
+	if err != nil {
+		resp.Err(2, err.Error())
+		return
+	}
+	resp["strategy"] = strategy
+}
+
+func removeHandler(c *gin.Context) {
+	resp := types.NewEmptyResponse()
+	defer c.JSON(200, resp)
+	id := c.Query("id")
+	if id == "" {
+		resp.Err(1, "No strategy specified")
+		return
+	}
+	s := app.Instance().Store
+	_, err := s.GetStrategy(id)
+	if err != nil {
+		resp.Err(2, err.Error())
+		return
+	}
+	s.RemoveStrategy(id)
+}
+
+func checkStrategy(resp types.JsonResponse, c *gin.Context) (strategy *definition.Strategy, result bool) {
 	id := strings.TrimSpace(c.PostForm("id"))
 	kind := c.PostForm("kind")
 	bind := strings.TrimSpace(c.PostForm("bind"))
@@ -40,9 +75,8 @@ func createHandler(c *gin.Context) {
 	total, _ := strconv.Atoi(strings.TrimSpace(c.PostForm("total")))
 	parameter := strings.TrimSpace(c.PostForm("parameter"))
 	target := strings.TrimSpace(c.PostForm("target"))
-	store := app.Instance().Store
 	if id == "" {
-		resp.Err(1, "ID cannot be empry")
+		resp.Err(1, "ID cannot be empty")
 		return
 	}
 	if kind == "" {
@@ -50,7 +84,7 @@ func createHandler(c *gin.Context) {
 		return
 	}
 	if bind == "" {
-		resp.Err(1, "Bind cannot be empry")
+		resp.Err(1, "Bind cannot be empty")
 		return
 	}
 	if total < 1 {
@@ -61,15 +95,6 @@ func createHandler(c *gin.Context) {
 		resp.Err(1, "Limit should be [0, total]")
 		return
 	}
-	s, err := store.GetStrategy(id)
-	if err == nil && s != nil {
-		resp.Err(2, "Strategy in same ID has already existed")
-		return
-	}
-	if s != nil {
-		resp.Err(3, "Strategy's ID should be unique")
-		return
-	}
 	if target == "" {
 		target = "127.0.0.1"
 	}
@@ -78,19 +103,62 @@ func createHandler(c *gin.Context) {
 		resp.Err(4, "Kind is illegal")
 		return
 	}
-	store.CreateStrategy(&definition.Strategy{
+	strategy = &definition.Strategy{
 		Id:                   id,
 		MaxOnSingleScheduler: limit,
 		Total:                total,
 		Kind:                 strategyKind,
 		Bind:                 bind,
 		Parameter:            parameter,
-		IpList:               strings.Split(target, ","),
-		Enabled:              true,
-	})
+		Enabled:              false,
+	}
+	targets := strings.Split(target, ",")
+	strategy.IpList = make([]string, 0, len(targets))
+	for _, t := range targets {
+		if len(t) < 1 {
+			continue
+		}
+		strategy.IpList = append(strategy.IpList, t)
+	}
+	result = true
+	return
+}
+
+func createHandler(c *gin.Context) {
+	resp := types.NewEmptyResponse()
+	defer c.JSON(200, resp)
+	store := app.Instance().Store
+	if strategy, ok := checkStrategy(resp, c); ok {
+		s, err := store.GetStrategy(strategy.Id)
+		if err != nil && err != storepkg.NotExist {
+			resp.Err(2, "Fail to retrieve data from store")
+			return
+		}
+		if s != nil {
+			resp.Err(2, "Strategy in same ID has already existed")
+			return
+		}
+		store.CreateStrategy(strategy)
+	}
 }
 
 func saveHandler(c *gin.Context) {
+	resp := types.NewEmptyResponse()
+	defer c.JSON(200, resp)
+	store := app.Instance().Store
+	if strategy, ok := checkStrategy(resp, c); ok {
+		s, err := store.GetStrategy(strategy.Id)
+		if err != nil && err != storepkg.NotExist {
+			resp.Err(2, "Fail to retrieve data from store")
+			return
+		}
+		if s == nil {
+			resp.Err(2, "Strategy doesn't exist")
+			return
+		}
+		strategy.Enabled = s.Enabled
+		store.UpdateStrategy(strategy)
+	}
 }
 
 func controlHandler(enabled bool, c *gin.Context) {

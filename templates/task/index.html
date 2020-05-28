@@ -1,0 +1,273 @@
+{{define "task/index.html"}}
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Tasks</title>
+<link rel="stylesheet" type="text/css" href="/css/common.css">
+<link rel="stylesheet" type="text/css" href="/css/task.css">
+<script type="text/javascript" src="/js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery/form.js"></script>
+</head>
+<body>
+{{template "header.html" .}}
+<div class="container">
+<table>
+    <thead>
+        <tr>
+            <th>NO</th>
+            <th>Operation</th>
+            <th>ID</th>
+            <th>Bind</th>
+            <th>Parameter</th>
+            <th>Batch(Executors)<br />/Fetch</th>
+            <th>Interval(ms)<br />IntervalNoData</th>
+            <th>Heartbeat/Death</th>
+            <th>Model</th>
+            <th>MaxTaskItems</th>
+            <th>Items</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{range $i, $s := .tasks}}
+        <tr>
+            <td>{{add $i 1}}</td>
+            <td>
+                <a class="btnEdit" href="javascript:void(0)" data-id="{{$s.Id}}">Edit</a>
+                <a class="btnRemove" href="javascript:void(0)" data-id="{{$s.Id}}">Remove</a>
+            </td>
+            <td>{{$s.Id}}</td>
+            <td>
+                {{$s.Bind}}
+            </td>
+            <td>{{$s.Parameter}}</td>
+            <td>{{$s.BatchCount}}({{$s.ExecutorCount}})/{{$s.FetchCount}}</td>
+            <td>{{$s.Interval}}/{{$s.IntervalNoData}}</td>
+            <td>{{$s.HeartbeatInterval}}/{{$s.DeathTimeout}}</td>
+            <td>
+                {{if eq $s.Model 0}}Normal{{end}}
+                {{if eq $s.Model 1}}Stream{{end}}
+            </td>
+            <td>{{$s.MaxTaskItems}}</td>
+            <td>
+                <div class="items">
+                {{range $index, $item := $s.Items}}
+                    <li><label>{{$item.Id}}</label>{{$item.Parameter}}</li>
+                {{end}}
+                <div>
+            </td>
+        </tr>
+        {{end}}
+    </tbody>
+</table>
+<div class="frmCreate">
+    <a class="create" href="javascript:void(0)">Create Task</a>
+    <form action="create" method="post">
+    <div class="form">
+        <li>
+            <label for="txtId">TaskID: </label>
+            <input id="txtId" name="id" type="text" placeholder="eg. RecycleHistoryTask" />
+        </li>
+        <li>
+            <label for="selModel">Model: </label>
+            <div class="unit">
+                <input id="modelNormal" type="radio" name="model" value="normal" checked /><label for="modelNormal">Normal</label>
+                <input id="modelStream" type="radio" name="model" value="stream" /><label for="modelStream">Stream</label>
+            </div>
+        </li>
+        <li>
+            <label for="txtBind">Bind: </label>
+            <input id="txtBind" name="bind" type="text" />
+            <div class="hint">
+            </div>
+        </li>
+        <li>
+            <label for="txtFetch">Fetch Count: </label>
+            <input id="txtFetch" name="fetch" type="text" value="100" />
+            <div class="hint">
+                How many tasks should be returned as expected in single select().<br />
+                Generally it should be MORE than <b>10*Executors*BatchCount</b>.<br />
+                It's taken as a parameter in select() and implemented by user. 
+                If your implementation didn't rely on it then it had no meaning.
+            </div>
+        </li>
+        <li>
+            <label for="txtBatch">Batch Count: </label>
+            <input id="txtBatch" name="batch" type="text" value="1" />
+            <div class="hint">
+                1 for <b>SingleExecutor</b> implementation while >1 for <b>BatchExecutor</b>.<br />
+                You should implement your executor to the correct interface.
+            </div>
+        </li>
+        <li>
+            <label for="txtExecutor">Executor Count: </label>
+            <input id="txtExecutor" name="executor" type="text" value="1" />
+            <div class="hint">
+                How many execute() can be invoked at the same time.
+            </div>
+        </li>
+        <li>
+            <label for="txtParameter">Parameter: </label>
+            <input id="txtParameter" name="parameter" type="text" />
+        </li>
+        <li>
+            <label for="txtMaxTaskItem">Max Task Items: </label>
+            <input id="txtMaxTaskItem" name="maxtaskitem" type="text" value="0" />
+            <div class="hint">
+                Whether should limit the maximum count of task items per worker.<br />
+                0 for no limit. It can be used avoiding overload on worker instances.
+            </div>
+        </li>
+        <li>
+            <label for="txtTaskItem">Task Items: </label>
+            <textarea id="txtTaskItem" name="taskitem"></textarea>
+            <div class="hint">
+                Define task items in either form as below:<br />
+                1. &lt;<b>ItemId</b>&gt;<br />
+                2. &lt;<b>ItemId</b>&gt;:{&lt;<b>ItemParameter</b>&gt;}<br />
+                <br />
+                Examples:<br />
+                1. <span class="quote">p0,p1,p2,p3</span> defines 4 task items(or call them "<b>partitions</b>")<br />
+                2. <span class="quote">p0:{day=1,2,3},p1:{day=4},p2:{day=6,7},p3</span> also defines 4 task items with 3 of them having <b>parameter</b>.<br />
+                <br />
+                The count of task items should be no less than the count of workers defined in <b>strategy</b>
+                or some of workers will NEVER get any task items to schedule.
+            </div>
+        </li>
+        <li>
+            <label for="txtInterval">Select Delay: </label>
+            <input id="txtInterval" name="interval" type="text" value="0" />
+            <div class="hint">
+                In milliseconds, fix interval between select()
+            </div>
+        </li>
+        <li>
+            <label for="txtIntervalNoData">Select Delay(No Data): </label>
+            <input id="txtIntervalNoData" name="intervalNoData" type="text" value="500" />
+            <div class="hint">
+                In milliseconds, delay when no data returned by select()
+            </div>
+        </li>
+        <li>
+            <label for="txtHeartbeat">Heartbeat Interval: </label>
+            <input id="txtHeartbeat" name="heartbeat" type="text" value="5000" />
+            <div class="hint">
+                In milliseconds
+            </div>
+        </li>
+        <li>
+            <label for="txtDeath">Death Timeout: </label>
+            <input id="txtDeath" name="death" type="text" value="60000" />
+            <div class="hint">
+                How long taking a registered runtime as dead.
+            </div>
+        </li>
+        <li>
+            <button type="submit" id="btnSubmit">Submit</button>
+            <button type="button" id="btnCancel">Cancel</button>
+        </li>
+        <li class="tip"></li>
+    </div>
+    </form>
+</div>
+
+</div>
+<script>
+$(function() {
+
+$(".frmCreate .create").click(function() {
+    var $form = $(".frmCreate .form");
+    $(".frmCreate form")[0].reset();
+    $form.find("[name='id']").attr("readonly", false);
+    $(".frmCreate form").attr("action", "create");
+    $form.show(100);
+});
+$("#btnCancel").click(function() {
+    $(".frmCreate .form").hide(100);
+});
+$(".frmCreate form").ajaxForm({
+    beforeSerialize: function(data) {
+        $(".tip").removeClass("fail");
+        $(".tip").html("Submitting");
+    },
+    success: function(data) {
+        if (data.errno == 0) {
+            document.location.reload();
+        } else {
+            $(".tip").html(data.errdesc);
+            $(".tip").addClass("fail");
+        }
+    }
+});
+$(".btnRemove").click(function() {
+    var $this = $(this);
+    var id = $this.data("id");
+    if (!confirm("Confirm to remove task [" + id + "]?")) {
+        return false;
+    }
+    $.getJSON('remove?id=' + encodeURIComponent(id), function(data) {
+        if (data.errno == 0) {
+            document.location.reload();
+        } else {
+            alert(data.errdesc);
+        }
+    });
+});
+function updateForm(obj) {
+    var $form = $(".frmCreate form");
+    $form.find("[name='id']").val(obj.Id);
+    $form.find("[name='id']").attr("readonly", true);
+    switch (obj.Model) {
+        case 1:
+            // stream
+            $form.find("[name='model'][value='stream']").click();
+            break;
+        default:
+            // normal
+            $form.find("[name='model'][value='normal']").click();
+            break;
+    }
+    $form.find("[name='bind']").val(obj.Bind);
+    $form.find("[name='fetch']").val(obj.FetchCount);
+    $form.find("[name='batch']").val(obj.BatchCount);
+    $form.find("[name='executor']").val(obj.ExecutorCount);
+    $form.find("[name='parameter']").val(obj.Parameter);
+    $form.find("[name='maxtaskitem']").val(obj.MaxTaskItems);
+    // task items
+    var items = "";
+    if (obj.Items) {
+        for (var i = 0; i < obj.Items.length; i ++) {
+            if (items != "") {
+                items += ",";
+            }
+            items += obj.Items[i].Id;
+            if (obj.Items[i].Parameter != "") {
+                items += ":{" + obj.Items[i].Parameter + "}";
+            }
+        }
+    }
+    $form.find("[name='taskitem']").val(items);
+    $form.find("[name='interval']").val(obj.Interval);
+    $form.find("[name='intervalNoData']").val(obj.IntervalNoData);
+    $form.find("[name='heartbeat']").val(obj.HeartbeatInterval);
+    $form.find("[name='death']").val(obj.DeathTimeout);
+    $form.attr("action", "save");
+    $(".frmCreate .form").show(100);
+}
+$(".btnEdit").click(function() {
+    var $this = $(this);
+    var id = $this.data("id");
+    $.getJSON('get?id=' + encodeURIComponent(id), function(data) {
+        if (data.errno == 0) {
+            updateForm(data.task);
+        } else {
+            alert(data.errdesc);
+        }
+    });
+})
+
+})
+</script>
+{{template "footer.html" .}}
+</body>
+</html>
+{{end}}

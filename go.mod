@@ -5,8 +5,8 @@ go 1.14
 require (
 	github.com/alecthomas/units v0.0.0-20190924025748-f65c72e2690d // indirect
 	github.com/gin-gonic/gin v1.6.3
-	github.com/jasonjoo2010/goschedule v0.0.0-20200528085553-cf2b5ec25568
-	github.com/jasonjoo2010/goschedule/store/redis v0.0.0-20200528085553-cf2b5ec25568
+	github.com/jasonjoo2010/goschedule v0.0.0-20200529095745-5accacc243c2
+	github.com/jasonjoo2010/goschedule/store/redis v0.0.0-20200529095745-5accacc243c2
 	github.com/sirupsen/logrus v1.6.0
 	github.com/stretchr/testify v1.5.1
 	golang.org/x/sys v0.0.0-20200511232937-7e40ca221e25 // indirect

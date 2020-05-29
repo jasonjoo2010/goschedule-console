@@ -7,11 +7,12 @@
 <link rel="stylesheet" type="text/css" href="/css/task.css">
 <script type="text/javascript" src="/js/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="/js/jquery/form.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
 </head>
 <body>
 {{template "header.html" .}}
 <div class="container">
-<table>
+<table id="taskList">
     <thead>
         <tr>
             <th>NO</th>
@@ -29,7 +30,7 @@
     </thead>
     <tbody>
         {{range $i, $s := .tasks}}
-        <tr>
+        <tr data-id="{{$s.Id}}">
             <td>{{add $i 1}}</td>
             <td>
                 <a class="btnEdit" href="javascript:void(0)" data-id="{{$s.Id}}">Edit</a>
@@ -59,6 +60,46 @@
         {{end}}
     </tbody>
 </table>
+<div id="templateRuntime" style="display:none">
+<div class="runtimeList">
+<h3 style="margin-top: 20px;">Strategy: <span class="strategy"></h3>
+<table>
+    <thead>
+        <tr>
+            <th>NO</th>
+            <th>Id</th>
+            <th>OwnSign</th>
+            <th>IP</th>
+            <th>Host</th>
+            <th>Executor</th>
+            <th>Create</th>
+            <th>Heartbeat</th>
+            <th>Fetch</th>
+            <th>Version</th>
+            <th>Cron</th>
+            <th>Detail</th>
+            <th>SchedulerId</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+</div>
+</div>
+<div id="templateAssignment" style="display:none">
+<table class="assignmentList">
+    <thead>
+        <tr>
+            <th>ItemId</th>
+            <th>RuntimeId</th>
+            <th>RequestedRuntimeId</th>
+            <th>Parameter</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+</div>
+<div id="infoPanel">
+</div>
 <div class="frmCreate">
     <a class="create" href="javascript:void(0)">Create Task</a>
     <form action="create" method="post">
@@ -263,7 +304,85 @@ $(".btnEdit").click(function() {
             alert(data.errdesc);
         }
     });
-})
+});
+function renderDetail(statistics) {
+    var html = "";
+    html += "select=" + statistics.SelectCount;
+    html += ",items=" + statistics.SelectItemCount;
+    html += "<br />";
+    html += "succ=" + statistics.ExecuteSuccCount;
+    html += ",fail=" + statistics.ExecuteFailCount;
+    html += ",cost=" + statistics.ExecuteSpendTime;
+    return html;
+}
+function renderRuntime(no, runtime) {
+    var html = '<tr>';
+    html += '<td>' + no + '</td>';
+    html += '<td>' + runtime.Id + '</td>';
+    html += '<td>' + runtime.OwnSign + '</td>';
+    html += '<td>' + runtime.Ip + '</td>';
+    html += '<td>' + runtime.Hostname + '</td>';
+    html += '<td>' + runtime.ExecutorCount + '</td>';
+    html += '<td>' + formatMillis(runtime.CreateTime) + '</td>';
+    html += '<td>' + formatMillis(runtime.LastHeartBeat) + '</td>';
+    html += '<td>' + formatMillis(runtime.Statistics.LastFetchTime) + '</td>';
+    html += '<td>' + runtime.Version + '</td>';
+    html += '<td>' + (runtime.NextRunnable>0 ? formatMillis(runtime.NextRunnable) : "") + '</td>';
+    html += '<td>' + renderDetail(runtime.Statistics) + '</td>';
+    html += '<td>' + runtime.SchedulerId + '</td>';
+    html += '</tr>';
+    return html;
+}
+function renderAssignment(assign) {
+    var html = '<tr>';
+    html += '<td>' + assign.ItemId + '</td>';
+    html += '<td>' + assign.RuntimeId + '</td>';
+    html += '<td>' + assign.RequestedRuntimeId + '</td>';
+    html += '<td>' + assign.Parameter + '</td>';
+    html += '</tr>';
+    return html;
+}
+$("#taskList tbody tr").click(function() {
+    var $this = $(this);
+    if (!$this.hasClass("selected")) {
+        $this.parent().find(".selected").removeClass("selected");
+        $this.addClass("selected");
+    }
+    var id = $this.data("id");
+    $.getJSON("info?id=" + encodeURIComponent(id), function(data) {
+        if (data.errno != 0) {
+            alert(data.errdesc);
+            return;
+        }
+        var $panel = $("#infoPanel");
+        var $templateRuntime = $("#templateRuntime .runtimeList");
+        var $templateAssignment = $("#templateAssignment .assignmentList");
+        $panel.html('');
+        var infoMap = data.info;
+        for (var strategyId in infoMap) {
+            var single = infoMap[strategyId];
+            var runtimes = single.Runtimes;
+            var assignments = single.Assignments;
+            var version = single.ConfigVersion;
+            var $runtime = $templateRuntime.clone();
+            var $runtimeBody = $runtime.find("tbody");
+            if (runtimes.length == 0 || assignments.length == 0) {
+                continue
+            }
+            $runtime.find(".strategy").html(strategyId);
+            for (var i = 0; i < runtimes.length; i ++) {
+                $runtimeBody.append(renderRuntime(i + 1, runtimes[i]));
+            }
+            var $assignment = $templateAssignment.clone();
+            var $assignmentBody = $assignment.find("tbody");
+            for (var i = 0; i < assignments.length; i ++) {
+                $assignmentBody.append(renderAssignment(assignments[i]));
+            }
+            $panel.append($runtime);
+            $panel.append($assignment);
+        }
+    });
+});
 
 })
 </script>

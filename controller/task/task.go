@@ -15,11 +15,18 @@ import (
 	storepkg "github.com/jasonjoo2010/goschedule/store"
 )
 
+type info struct {
+	ConfigVersion int64
+	Runtimes      []*definition.TaskRuntime
+	Assignments   []*definition.TaskAssignment
+}
+
 func Init(engine *gin.Engine) {
 	group := engine.Group("/task")
 
 	group.GET("/index", indexHandler)
 	group.GET("/get", getHandler)
+	group.GET("/info", infoHandler)
 	group.POST("/create", createHandler)
 	group.POST("/save", saveHandler)
 	group.GET("/remove", removeHandler)
@@ -50,6 +57,45 @@ func getHandler(c *gin.Context) {
 		return
 	}
 	resp["task"] = task
+}
+
+func infoHandler(c *gin.Context) {
+	resp := types.NewEmptyResponse()
+	defer c.JSON(200, resp)
+	id := c.Query("id")
+	if id == "" {
+		resp.Err(1, "No task specified")
+		return
+	}
+	s := app.Instance().Store
+	task, err := s.GetTask(id)
+	if err != nil {
+		resp.Err(1, "Specific task could not be found")
+		return
+	}
+	strategies, _ := s.GetStrategies()
+	infoMap := make(map[string]info)
+	strategyMap := make(map[string]*definition.Strategy)
+	for _, strategy := range strategies {
+		if strategy.Kind != definition.TaskKind || strategy.Bind != task.Id {
+			continue
+		}
+		strategyMap[strategy.Id] = strategy
+		runtimes, _ := s.GetTaskRuntimes(strategy.Id, task.Id)
+		assignments, _ := s.GetTaskAssignments(strategy.Id, task.Id)
+		version, _ := s.GetTaskItemsConfigVersion(strategy.Id, task.Id)
+		infoMap[strategy.Id] = info{
+			Runtimes:      runtimes,
+			Assignments:   assignments,
+			ConfigVersion: version,
+		}
+	}
+	if err != nil {
+		resp.Err(2, err.Error())
+		return
+	}
+	resp["strategies"] = strategyMap
+	resp["info"] = infoMap
 }
 
 func removeHandler(c *gin.Context) {

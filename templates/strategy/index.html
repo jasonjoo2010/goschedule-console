@@ -7,6 +7,7 @@
 <link rel="stylesheet" type="text/css" href="/css/strategy.css">
 <script type="text/javascript" src="/js/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="/js/jquery/form.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
 </head>
 <body>
 {{template "header.html" .}}
@@ -258,14 +259,13 @@ $("#strategyList tbody tr").click(function() {
         var $tbody = $("#runtimeList tbody");
         var html = '';
         for (var i = 0; i < data.runtimes.length; i ++) {
-            var created = new Date(data.runtimes[i].CreateAt)
             html += '<tr>';
             html += '<td>' + (i + 1) + '</td>';
             html += '<td>' + data.runtimes[i].StrategyId + '</td>';
             html += '<td>' + data.runtimes[i].SchedulerId + '</td>';
             html += '<td>' + data.runtimes[i].Num + '</td>';
             html += '<td>' + data.runtimes[i].RequestedNum + '</td>';
-            html += '<td>' + created.getFullYear() + "-" + (created.getMonth() + 1) + "-" + created.getDate() + " " + created.getHours() + ":" + created.getMinutes() + created.getSeconds() + '</td>';
+            html += '<td>' + formatMillis(data.runtimes[i].CreateAt) + '</td>';
             html += '</tr>';
         }
         $tbody.html(html);

@@ -127,6 +127,25 @@
             </div>
         </li>
         <li>
+            <label for="txtCronBegin">Cron Begin: </label>
+            <input id="txtCronBegin" name="cronBegin" type="text" />
+        </li>
+        <li>
+            <label for="txtCronEnd">Cron End: </label>
+            <input id="txtCronEnd" name="cronEnd" type="text" />
+            <div class="hint">
+                <b>CronBegin</b>/<b>CronEnd</b> follows general syntax of unix cron with <b>seconds</b> precise supported.<br />
+                Usage: <b>second minute hour day month week</b><br />
+                Example: 0 0 * * * ? means beginning of each hour<br />
+                <br />
+                Cron of strategy can work in two models: <b>Single begin</b> and <b>Both</b><br />
+                If both of them are set indicating a valid time range it generally means available running time. (Implemented by different workers)<br />
+                For begin only model it may have different definitions between different types of worker.<br />
+                For instance, single shot for <b>FuncWorker</b> while continuous scheduling until empty data set returned by select() for <b>TaskWorker</b> .<br />
+                For more details please refer to documentation.
+            </div>
+        </li>
+        <li>
             <button type="submit" id="btnSubmit">Submit</button>
             <button type="button" id="btnCancel">Cancel</button>
         </li>
@@ -226,6 +245,8 @@ function updateForm(obj) {
     $form.find("[name='total']").val(obj.Total);
     $form.find("[name='parameter']").val(obj.Parameter);
     $form.find("[name='target']").val(obj.IpList.join(","));
+    $form.find("[name='cronBegin']").val(obj.CronBegin);
+    $form.find("[name='cronEnd']").val(obj.CronEnd);
     $form.attr("action", "save");
     $(".frmCreate .form").show(100);
 }

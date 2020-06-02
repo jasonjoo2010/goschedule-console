@@ -12,6 +12,7 @@ import (
 	"github.com/jasonjoo2010/goschedule-console/utils"
 	"github.com/jasonjoo2010/goschedule/core/definition"
 	storepkg "github.com/jasonjoo2010/goschedule/store"
+	"github.com/robfig/cron"
 )
 
 func Init(engine *gin.Engine) {
@@ -93,6 +94,8 @@ func checkStrategy(resp types.JsonResponse, c *gin.Context) (strategy *definitio
 	total, _ := strconv.Atoi(strings.TrimSpace(c.PostForm("total")))
 	parameter := strings.TrimSpace(c.PostForm("parameter"))
 	target := strings.TrimSpace(c.PostForm("target"))
+	cronBegin := strings.TrimSpace(c.PostForm("cronBegin"))
+	cronEnd := strings.TrimSpace(c.PostForm("cronEnd"))
 	if id == "" {
 		resp.Err(1, "ID cannot be empty")
 		return
@@ -116,6 +119,21 @@ func checkStrategy(resp types.JsonResponse, c *gin.Context) (strategy *definitio
 	if target == "" {
 		target = "127.0.0.1"
 	}
+	cronParser := cron.NewParser(cron.Second | cron.Minute | cron.Hour | cron.Dom | cron.Month | cron.Dow)
+	if cronBegin != "" {
+		_, err := cronParser.Parse(cronBegin)
+		if err != nil {
+			resp.Err(1, "CronBegin is incorrect.")
+			return
+		}
+	}
+	if cronEnd != "" {
+		_, err := cronParser.Parse(cronEnd)
+		if err != nil {
+			resp.Err(1, "CronEnd is incorrect.")
+			return
+		}
+	}
 	strategyKind := utils.ToStrategyKind(kind)
 	if strategyKind == definition.UnknowKind {
 		resp.Err(4, "Kind is illegal")
@@ -129,6 +147,8 @@ func checkStrategy(resp types.JsonResponse, c *gin.Context) (strategy *definitio
 		Bind:                 bind,
 		Parameter:            parameter,
 		Enabled:              false,
+		CronBegin:            cronBegin,
+		CronEnd:              cronEnd,
 	}
 	targets := strings.Split(target, ",")
 	strategy.IpList = make([]string, 0, len(targets))

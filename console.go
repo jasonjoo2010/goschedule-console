@@ -6,6 +6,8 @@ package main
 
 import (
 	"flag"
+	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -25,7 +27,8 @@ func init() {
 }
 
 func main() {
-	flag.Parse()
+	baseDir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
+	os.Chdir(baseDir)
 	err := app.Instance().InitConfig(configFile)
 	if err != nil {
 		return

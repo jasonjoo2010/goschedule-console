@@ -24,6 +24,7 @@ func init() {
 	flag.StringVar(&configFile, "c", "config.yml", "Configuration file")
 	flag.IntVar(&listenPort, "p", 8000, "Serving port")
 	flag.BoolVar(&debug, "v", false, "Debug mode")
+	flag.Parse()
 }
 
 func main() {

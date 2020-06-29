@@ -12,7 +12,7 @@ import (
 )
 
 func TestParseTaskItems(t *testing.T) {
-	var list []*definition.TaskItem
+	var list []definition.TaskItem
 
 	list = ParseTaskItems("")
 	assert.Equal(t, 0, len(list))

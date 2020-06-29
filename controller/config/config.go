@@ -56,6 +56,10 @@ func saveHandler(c *gin.Context) {
 	if isTest {
 		resp["test"] = true
 		s := utils.CreateStore(storageConfig)
+		if s == nil {
+			resp.Err(1, "Fail to create store, please check the configuration or connection")
+			return
+		}
 		list, err := s.GetSchedulers()
 		if err != nil {
 			resp.Err(1, "Failed: "+err.Error())

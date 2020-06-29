@@ -5,3 +5,15 @@
     margin: 0;
     padding: 0;
 }
+
+.container .tip {
+    line-height: 20px;
+    font-size: 13px;
+    margin-left: 80px;
+    margin-bottom: 20px;
+    color: #666;
+}
+
+.container .tip b {
+    color: #0377ca;
+}

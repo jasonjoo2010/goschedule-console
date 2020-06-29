@@ -17,7 +17,7 @@ import (
 // 2 -> id segment, wait for '}', no reset
 // 3 -> wait for ',' to reset
 type state struct {
-	result []*definition.TaskItem
+	result []definition.TaskItem
 	step   int
 	id     strings.Builder
 	param  strings.Builder
@@ -31,7 +31,7 @@ func (s *state) Reset() {
 		}
 		return
 	}
-	item := &definition.TaskItem{Id: s.id.String()}
+	item := definition.TaskItem{Id: s.id.String()}
 	if s.param.Len() > 0 {
 		item.Parameter = s.param.String()
 		s.param.Reset()
@@ -61,13 +61,13 @@ func (s *state) Process(b byte) {
 	}
 }
 
-func ParseTaskItems(str string) []*definition.TaskItem {
+func ParseTaskItems(str string) []definition.TaskItem {
 	if str == "" {
-		return make([]*definition.TaskItem, 0)
+		return make([]definition.TaskItem, 0)
 	}
 	// use state machine
 	state := &state{
-		result: make([]*definition.TaskItem, 0, 2),
+		result: make([]definition.TaskItem, 0, 2),
 	}
 	for i := 0; i < len(str); i++ {
 		state.Process(str[i])

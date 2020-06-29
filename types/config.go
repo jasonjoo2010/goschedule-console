@@ -8,7 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var STORAGE_TYPES [4]string = [...]string{"memory", "redis", "zookeeper", "jdbc"}
+var STORAGE_TYPES [6]string = [...]string{"memory", "redis", "zookeeper", "database", "etcdv2", "etcdv3"}
 
 // DashboardConfig respresents structure of config.xml
 type DashboardConfig struct {

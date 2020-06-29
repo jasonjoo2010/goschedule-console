@@ -5,34 +5,100 @@
 package utils
 
 import (
+	"database/sql"
+	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jasonjoo2010/goschedule-console/types"
 	"github.com/jasonjoo2010/goschedule/store"
+	"github.com/jasonjoo2010/goschedule/store/database"
+	"github.com/jasonjoo2010/goschedule/store/etcdv2"
+	"github.com/jasonjoo2010/goschedule/store/etcdv3"
 	"github.com/jasonjoo2010/goschedule/store/memory"
 	"github.com/jasonjoo2010/goschedule/store/redis"
+	"github.com/jasonjoo2010/goschedule/store/zookeeper"
 	"github.com/sirupsen/logrus"
 )
+
+func parseAddr(address string, default_port int) (string, int, error) {
+	port := default_port
+	addr := address
+	pos := strings.IndexRune(addr, ':')
+	if pos > 0 {
+		addr = address[:pos]
+		var err error
+		port, err = strconv.Atoi(address[pos+1:])
+		if err != nil {
+			logrus.Error("Wrong address format: ", address)
+			return "", 0, err
+		}
+	}
+	return addr, port, nil
+}
 
 func CreateStore(s types.Storage) store.Store {
 	switch s.Type {
 	case "memory":
 		return memory.New()
 	case "redis":
-		port := 6379
-		addr := s.Address
-		pos := strings.IndexRune(addr, ':')
-		if pos > 0 {
-			addr = s.Address[:pos]
-			var err error
-			port, err = strconv.Atoi(s.Address[pos+1:])
-			if err != nil {
-				logrus.Error("Wrong address format: ", s.Address)
-				return nil
-			}
+		addr, port, err := parseAddr(s.Address, 6379)
+		if err != nil {
+			return nil
 		}
 		return redis.New(s.Namespace, addr, port)
+	case "zookeeper":
+		addr, port, err := parseAddr(s.Address, 2181)
+		if err != nil {
+			return nil
+		}
+		return zookeeper.New(s.Namespace, addr, port)
+	case "database":
+		u, err := url.Parse(s.Address)
+		if err != nil {
+			logrus.Warn("incorrect address: ", s.Address)
+			return nil
+		}
+		info_table := u.Query().Get("info_table")
+		if info_table == "" {
+			info_table = "schedule_info"
+		}
+		db, err := sql.Open(u.Scheme,
+			fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+				s.Username,
+				s.Password,
+				u.Hostname(),
+				u.Port(),
+				strings.Trim(u.Path, "/")),
+		)
+		if err != nil {
+			logrus.Warn("Create db instance failed: ", err.Error())
+			return nil
+		}
+		return database.New(
+			s.Namespace,
+			db,
+			database.WithInfoTable(info_table),
+		)
+	case "etcdv2":
+		addr, port, err := parseAddr(s.Address, 2379)
+		if err != nil {
+			return nil
+		}
+		return etcdv2.New(s.Namespace, []string{fmt.Sprintf("%s:%d", addr, port)})
+	case "etcdv3":
+		addr, port, err := parseAddr(s.Address, 2379)
+		if err != nil {
+			return nil
+		}
+		s, err := etcdv3.New(s.Namespace, []string{fmt.Sprintf("%s:%d", addr, port)})
+		if err != nil {
+			logrus.Warn("Create etcdv3 instance failed: ", err.Error())
+			return nil
+		}
+		return s
 	default:
 		logrus.Warn("Unknow type of storage: ", s.Type)
 		return nil

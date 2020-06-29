@@ -18,11 +18,20 @@
         <li>
             <label for="selType">Type: </label>
             <div class="unit">
-                <input id="typeMemory" type="radio" name="type" value="memory" /><label for="typeMemory">Memory</label>
                 <input id="typeRedis" type="radio" name="type" value="redis" /><label for="typeRedis">Redis</label>
                 <input id="typeZookeeper" type="radio" name="type" value="zookeeper" /><label for="typeZookeeper">ZooKeeper</label>
-                <input id="typeMysql" type="radio" name="type" value="Mysql" /><label for="typeMysql">Mysql</label>
+                <input id="typeDatabase" type="radio" name="type" value="database" /><label for="typeDatabase">Database</label>
+                <input id="typeEtcdv2" type="radio" name="type" value="etcdv2" /><label for="typeEtcdv2">Etcdv2</label>
+                <input id="typeEtcdv3" type="radio" name="type" value="etcdv3" /><label for="typeEtcdv3">Etcdv3</label>
             </div>
+            <li class="tip">
+                <b>For Database</b>, the pattern should be <br />
+                <b>drivername://ip:port/db?info_table=schedule_info</b><br />
+                And if you take `schedule_info` by default you can write it in short if you use `mysql`:<br />
+                <b>mysql://ip:port/db</b><br />
+                Currently only MySQL driver is introduced(in console).<br />
+                <b>For others</b>, it should be in pattern <b>ip:port</b>
+            </li>
         </li>
         <li>
             <label for="txtAddress">Adress: </label>
@@ -44,7 +53,7 @@
             <button tpye="button" id="btnTest" class="btn">Test</button>
             <button type="button" id="btnSubmit">Save</button>
         </li>
-        <li class="tip"></li>
+        <li class="tip" id="msg"></li>
     </div>
 </form>
 </div>
@@ -56,27 +65,27 @@ $("#frmSettings").ajaxForm({
     success: function(data) {
         $(".form button").attr("disabled", false);
         if (data.errno == 0) {
-            $(".tip").removeClass("fail");
+            $("#msg").removeClass("fail");
             if (data.test) {
-                $(".tip").html("Test passed");
+                $("#msg").html("Test passed");
             } else {
                 document.location.href = '/strategy/index';
             }
         } else {
-            $(".tip").html(data.errdesc);
-            $(".tip").addClass("fail");
+            $("#msg").html(data.errdesc);
+            $("#msg").addClass("fail");
         }
     }
 });
 $("#btnTest").click(function() {
-    $(".tip").html("Testing ...");
+    $("#msg").html("Testing ...");
     $(".form button").attr("disabled", true);
     $("#frmSettings input[name='test']").val("1");
     $("#frmSettings").submit();
     return false;
 });
 $("#btnSubmit").click(function() {
-    $(".tip").html("Submiting ...");
+    $("#msg").html("Submiting ...");
     $(".form button").attr("disabled", true);
     $("#frmSettings input[name='test']").val("0");
     $("#frmSettings").submit();

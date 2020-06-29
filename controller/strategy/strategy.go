@@ -20,6 +20,9 @@ import (
 )
 
 func Init(engine *gin.Engine) {
+	engine.GET("/", func(c *gin.Context) {
+		c.Redirect(301, "/strategy/index")
+	})
 	group := engine.Group("/strategy")
 
 	group.GET("/index", indexHandler)

@@ -14,7 +14,7 @@ import (
 	"github.com/jasonjoo2010/goschedule-console/controller"
 	"github.com/jasonjoo2010/goschedule-console/types"
 	"github.com/jasonjoo2010/goschedule-console/utils"
-	"github.com/jasonjoo2010/goschedule/core/definition"
+	"github.com/jasonjoo2010/goschedule/definition"
 	storepkg "github.com/jasonjoo2010/goschedule/store"
 	"github.com/robfig/cron"
 )
@@ -142,12 +142,12 @@ func checkStrategy(resp types.JsonResponse, c *gin.Context) (strategy *definitio
 		}
 	}
 	strategyKind := utils.ToStrategyKind(kind)
-	if strategyKind == definition.UnknowKind {
+	if strategyKind == definition.UnknownKind {
 		resp.Err(4, "Kind is illegal")
 		return
 	}
 	strategy = &definition.Strategy{
-		Id:                   id,
+		ID:                   id,
 		MaxOnSingleScheduler: limit,
 		Total:                total,
 		Kind:                 strategyKind,
@@ -158,12 +158,12 @@ func checkStrategy(resp types.JsonResponse, c *gin.Context) (strategy *definitio
 		CronEnd:              cronEnd,
 	}
 	targets := strings.Split(target, ",")
-	strategy.IpList = make([]string, 0, len(targets))
+	strategy.IPList = make([]string, 0, len(targets))
 	for _, t := range targets {
 		if len(t) < 1 {
 			continue
 		}
-		strategy.IpList = append(strategy.IpList, t)
+		strategy.IPList = append(strategy.IPList, t)
 	}
 	result = true
 	return
@@ -174,7 +174,7 @@ func createHandler(c *gin.Context) {
 	defer c.JSON(200, resp)
 	store := app.Instance().Store
 	if strategy, ok := checkStrategy(resp, c); ok {
-		s, err := store.GetStrategy(strategy.Id)
+		s, err := store.GetStrategy(strategy.ID)
 		if err != nil && err != storepkg.NotExist {
 			resp.Err(2, "Fail to retrieve data from store")
 			return
@@ -192,7 +192,7 @@ func saveHandler(c *gin.Context) {
 	defer c.JSON(200, resp)
 	store := app.Instance().Store
 	if strategy, ok := checkStrategy(resp, c); ok {
-		s, err := store.GetStrategy(strategy.Id)
+		s, err := store.GetStrategy(strategy.ID)
 		if err != nil && err != storepkg.NotExist {
 			resp.Err(2, "Fail to retrieve data from store")
 			return

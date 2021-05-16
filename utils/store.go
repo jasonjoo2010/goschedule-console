@@ -20,7 +20,7 @@ import (
 	"github.com/jasonjoo2010/goschedule/store/memory"
 	"github.com/jasonjoo2010/goschedule/store/redis"
 	"github.com/jasonjoo2010/goschedule/store/zookeeper"
-	"github.com/sirupsen/logrus"
+	"github.com/jasonjoo2010/goschedule/log"
 )
 
 func parseAddr(address string, default_port int) (string, int, error) {
@@ -32,7 +32,7 @@ func parseAddr(address string, default_port int) (string, int, error) {
 		var err error
 		port, err = strconv.Atoi(address[pos+1:])
 		if err != nil {
-			logrus.Error("Wrong address format: ", address)
+			log.Errorf("Wrong address format: %s", address)
 			return "", 0, err
 		}
 	}
@@ -58,7 +58,7 @@ func CreateStore(s types.Storage) store.Store {
 	case "database":
 		u, err := url.Parse(s.Address)
 		if err != nil {
-			logrus.Warn("incorrect address: ", s.Address)
+			log.Warnf("incorrect address: %s", s.Address)
 			return nil
 		}
 		info_table := u.Query().Get("info_table")
@@ -74,7 +74,7 @@ func CreateStore(s types.Storage) store.Store {
 				strings.Trim(u.Path, "/")),
 		)
 		if err != nil {
-			logrus.Warn("Create db instance failed: ", err.Error())
+			log.Warnf("Create db instance failed: %s", err.Error())
 			return nil
 		}
 		return database.New(
@@ -95,12 +95,12 @@ func CreateStore(s types.Storage) store.Store {
 		}
 		s, err := etcdv3.New(s.Namespace, []string{fmt.Sprintf("%s:%d", addr, port)})
 		if err != nil {
-			logrus.Warn("Create etcdv3 instance failed: ", err.Error())
+			log.Warnf("Create etcdv3 instance failed: %s", err.Error())
 			return nil
 		}
 		return s
 	default:
-		logrus.Warn("Unknow type of storage: ", s.Type)
+		log.Warnf("Unknown type of storage: %s", s.Type)
 		return nil
 	}
 }

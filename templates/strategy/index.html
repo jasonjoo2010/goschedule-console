@@ -28,22 +28,22 @@
     </thead>
     <tbody>
         {{range $i, $s := .strategies}}
-        <tr data-id="{{$s.Id}}" {{if not $s.Enabled}} class="stopped"{{end}}>
+        <tr data-id="{{$s.ID}}" {{if not $s.Enabled}} class="stopped"{{end}}>
             <td>{{add $i 1}}</td>
             <td>
-                <a class="btnEdit" href="javascript:void(0)" data-id="{{$s.Id}}">Edit</a>
-                <a class="btnRemove" href="javascript:void(0)" data-id="{{$s.Id}}">Remove</a>
+                <a class="btnEdit" href="javascript:void(0)" data-id="{{$s.ID}}">Edit</a>
+                <a class="btnRemove" href="javascript:void(0)" data-id="{{$s.ID}}">Remove</a>
                 {{if $s.Enabled}}
                 <a class="btnControl" href="javascript:void(0)" data-cmd="pause">Pause</a>
                 {{else}}
                 <a class="btnControl resume" href="javascript:void(0)" data-cmd="resume">Resume</a>
                 {{end}}
             </td>
-            <td>{{$s.Id}}</td>
+            <td>{{$s.ID}}</td>
             <td>{{if $s.Enabled}}Normal{{else}}Disabled{{end}}</td>
             <td>{{$s.MaxOnSingleScheduler}}/{{$s.Total}}</td>
             <td>
-                {{range $i, $ip := $s.IpList}}
+                {{range $i, $ip := $s.IPList}}
                     {{if gt $i 0}}<br />{{end}}
                     {{$ip}}
                 {{end}}
@@ -224,7 +224,7 @@ $(".btnRemove").click(function() {
 });
 function updateForm(obj) {
     var $form = $(".frmCreate form");
-    $form.find("[name='id']").val(obj.Id);
+    $form.find("[name='id']").val(obj.ID);
     $form.find("[name='id']").attr("readonly", true);
     switch (obj.Kind) {
         case 2:
@@ -244,7 +244,7 @@ function updateForm(obj) {
     $form.find("[name='limit']").val(obj.MaxOnSingleScheduler);
     $form.find("[name='total']").val(obj.Total);
     $form.find("[name='parameter']").val(obj.Parameter);
-    $form.find("[name='target']").val(obj.IpList.join(","));
+    $form.find("[name='target']").val(obj.IPList.join(","));
     $form.find("[name='cronBegin']").val(obj.CronBegin);
     $form.find("[name='cronEnd']").val(obj.CronEnd);
     $form.attr("action", "save");
@@ -282,8 +282,8 @@ $("#strategyList tbody tr").click(function() {
         for (var i = 0; i < data.runtimes.length; i ++) {
             html += '<tr>';
             html += '<td>' + (i + 1) + '</td>';
-            html += '<td>' + data.runtimes[i].StrategyId + '</td>';
-            html += '<td>' + data.runtimes[i].SchedulerId + '</td>';
+            html += '<td>' + data.runtimes[i].StrategyID + '</td>';
+            html += '<td>' + data.runtimes[i].SchedulerID + '</td>';
             html += '<td>' + data.runtimes[i].Num + '</td>';
             html += '<td>' + data.runtimes[i].RequestedNum + '</td>';
             html += '<td>' + formatMillis(data.runtimes[i].CreateAt) + '</td>';

@@ -14,7 +14,7 @@ import (
 	"github.com/jasonjoo2010/goschedule-console/controller"
 	"github.com/jasonjoo2010/goschedule-console/types"
 	"github.com/jasonjoo2010/goschedule-console/utils"
-	"github.com/jasonjoo2010/goschedule/core/definition"
+	"github.com/jasonjoo2010/goschedule/definition"
 )
 
 const (
@@ -169,7 +169,7 @@ func importSaveHandler(c *gin.Context) {
 	tasksSuccess := 0
 	store := app.Instance().Store
 	for _, strategy := range strategies {
-		s, _ := store.GetStrategy(strategy.Id)
+		s, _ := store.GetStrategy(strategy.ID)
 		if s != nil {
 			continue
 		}
@@ -180,7 +180,7 @@ func importSaveHandler(c *gin.Context) {
 		strategiesSuccess++
 	}
 	for _, task := range tasks {
-		s, _ := store.GetTask(task.Id)
+		s, _ := store.GetTask(task.ID)
 		if s != nil {
 			continue
 		}

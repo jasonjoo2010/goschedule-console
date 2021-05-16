@@ -5,7 +5,7 @@
 package utils
 
 import (
-	"github.com/jasonjoo2010/goschedule/core/definition"
+	"github.com/jasonjoo2010/goschedule/definition"
 )
 
 // ToStrategyKind returns kind of strategy and 0 for error

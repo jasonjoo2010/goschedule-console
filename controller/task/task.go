@@ -15,7 +15,7 @@ import (
 	"github.com/jasonjoo2010/goschedule-console/controller"
 	"github.com/jasonjoo2010/goschedule-console/types"
 	"github.com/jasonjoo2010/goschedule-console/utils"
-	"github.com/jasonjoo2010/goschedule/core/definition"
+	"github.com/jasonjoo2010/goschedule/definition"
 	storepkg "github.com/jasonjoo2010/goschedule/store"
 )
 
@@ -39,7 +39,7 @@ func Init(engine *gin.Engine) {
 func indexHandler(c *gin.Context) {
 	list, _ := app.Instance().Store.GetTasks()
 	sort.Slice(list, func(i, j int) bool {
-		return list[i].Id < list[j].Id
+		return list[i].ID < list[j].ID
 	})
 	c.HTML(http.StatusOK, "task/index.html", controller.DataWithSession(gin.H{
 		"tasks": list,
@@ -81,14 +81,14 @@ func infoHandler(c *gin.Context) {
 	infoMap := make(map[string]info)
 	strategyMap := make(map[string]*definition.Strategy)
 	for _, strategy := range strategies {
-		if strategy.Kind != definition.TaskKind || strategy.Bind != task.Id {
+		if strategy.Kind != definition.TaskKind || strategy.Bind != task.ID {
 			continue
 		}
-		strategyMap[strategy.Id] = strategy
-		runtimes, _ := s.GetTaskRuntimes(strategy.Id, task.Id)
-		assignments, _ := s.GetTaskAssignments(strategy.Id, task.Id)
-		version, _ := s.GetTaskItemsConfigVersion(strategy.Id, task.Id)
-		infoMap[strategy.Id] = info{
+		strategyMap[strategy.ID] = strategy
+		runtimes, _ := s.GetTaskRuntimes(strategy.ID, task.ID)
+		assignments, _ := s.GetTaskAssignments(strategy.ID, task.ID)
+		version, _ := s.GetTaskItemsConfigVersion(strategy.ID, task.ID)
+		infoMap[strategy.ID] = info{
 			Runtimes:      runtimes,
 			Assignments:   assignments,
 			ConfigVersion: version,
@@ -185,7 +185,7 @@ func checkTask(resp types.JsonResponse, c *gin.Context) (task *definition.Task, 
 		taskModel = definition.Stream
 	}
 	task = &definition.Task{
-		Id:                id,
+		ID:                id,
 		Model:             taskModel,
 		Bind:              bind,
 		Parameter:         parameter,
@@ -208,7 +208,7 @@ func createHandler(c *gin.Context) {
 	defer c.JSON(200, resp)
 	store := app.Instance().Store
 	if task, ok := checkTask(resp, c); ok {
-		s, err := store.GetTask(task.Id)
+		s, err := store.GetTask(task.ID)
 		if err != nil && err != storepkg.NotExist {
 			resp.Err(2, "Fail to retrieve data from store: "+err.Error())
 			return
@@ -226,7 +226,7 @@ func saveHandler(c *gin.Context) {
 	defer c.JSON(200, resp)
 	store := app.Instance().Store
 	if task, ok := checkTask(resp, c); ok {
-		s, err := store.GetTask(task.Id)
+		s, err := store.GetTask(task.ID)
 		if err != nil && err != storepkg.NotExist {
 			resp.Err(2, "Fail to retrieve data from store: "+err.Error())
 			return

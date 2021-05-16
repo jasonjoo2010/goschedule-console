@@ -5,7 +5,7 @@
 package types
 
 import (
-	"github.com/sirupsen/logrus"
+	"github.com/jasonjoo2010/goschedule/log"
 )
 
 var STORAGE_TYPES [6]string = [...]string{"memory", "redis", "zookeeper", "database", "etcdv2", "etcdv3"}
@@ -32,6 +32,6 @@ func VerifyStorage(s Storage) bool {
 			return true
 		}
 	}
-	logrus.Error("Type of storage is unknown: ", s.Type)
+	log.Errorf("Type of storage is unknown: %s", s.Type)
 	return false
 }

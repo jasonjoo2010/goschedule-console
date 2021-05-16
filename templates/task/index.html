@@ -30,13 +30,13 @@
     </thead>
     <tbody>
         {{range $i, $s := .tasks}}
-        <tr data-id="{{$s.Id}}">
+        <tr data-id="{{$s.ID}}">
             <td>{{add $i 1}}</td>
             <td>
-                <a class="btnEdit" href="javascript:void(0)" data-id="{{$s.Id}}">Edit</a>
-                <a class="btnRemove" href="javascript:void(0)" data-id="{{$s.Id}}">Remove</a>
+                <a class="btnEdit" href="javascript:void(0)" data-id="{{$s.ID}}">Edit</a>
+                <a class="btnRemove" href="javascript:void(0)" data-id="{{$s.ID}}">Remove</a>
             </td>
-            <td>{{$s.Id}}</td>
+            <td>{{$s.ID}}</td>
             <td>
                 {{$s.Bind}}
             </td>
@@ -52,7 +52,7 @@
             <td>
                 <div class="items">
                 {{range $index, $item := $s.Items}}
-                    <li><label>{{$item.Id}}</label>{{$item.Parameter}}</li>
+                    <li><label>{{$item.ID}}</label>{{$item.Parameter}}</li>
                 {{end}}
                 <div>
             </td>
@@ -255,7 +255,7 @@ $(".btnRemove").click(function() {
 });
 function updateForm(obj) {
     var $form = $(".frmCreate form");
-    $form.find("[name='id']").val(obj.Id);
+    $form.find("[name='id']").val(obj.ID);
     $form.find("[name='id']").attr("readonly", true);
     switch (obj.Model) {
         case 1:
@@ -280,7 +280,7 @@ function updateForm(obj) {
             if (items != "") {
                 items += ",";
             }
-            items += obj.Items[i].Id;
+            items += obj.Items[i].ID;
             if (obj.Items[i].Parameter != "") {
                 items += ":{" + obj.Items[i].Parameter + "}";
             }
@@ -318,26 +318,26 @@ function renderDetail(statistics) {
 function renderRuntime(no, runtime) {
     var html = '<tr>';
     html += '<td>' + no + '</td>';
-    html += '<td>' + runtime.Id + '</td>';
+    html += '<td>' + runtime.ID + '</td>';
     html += '<td>' + runtime.OwnSign + '</td>';
-    html += '<td>' + runtime.Ip + '</td>';
+    html += '<td>' + runtime.IP + '</td>';
     html += '<td>' + runtime.Hostname + '</td>';
     html += '<td>' + runtime.ExecutorCount + '</td>';
-    html += '<td>' + formatMillis(runtime.CreateTime) + '</td>';
-    html += '<td>' + formatMillis(runtime.LastHeartBeat) + '</td>';
+    html += '<td>' + formatMillis(runtime.Createtime) + '</td>';
+    html += '<td>' + formatMillis(runtime.LastHeartbeat) + '</td>';
     html += '<td>' + formatMillis(runtime.Statistics.LastFetchTime) + '</td>';
     html += '<td>' + runtime.Version + '</td>';
     html += '<td>' + (runtime.NextRunnable>0 ? formatMillis(runtime.NextRunnable) : "") + '</td>';
     html += '<td>' + renderDetail(runtime.Statistics) + '</td>';
-    html += '<td>' + runtime.SchedulerId + '</td>';
+    html += '<td>' + runtime.SchedulerID + '</td>';
     html += '</tr>';
     return html;
 }
 function renderAssignment(assign) {
     var html = '<tr>';
-    html += '<td>' + assign.ItemId + '</td>';
-    html += '<td>' + assign.RuntimeId + '</td>';
-    html += '<td>' + assign.RequestedRuntimeId + '</td>';
+    html += '<td>' + assign.ItemID + '</td>';
+    html += '<td>' + assign.RuntimeID + '</td>';
+    html += '<td>' + assign.RequestedRuntimeID + '</td>';
     html += '<td>' + assign.Parameter + '</td>';
     html += '</tr>';
     return html;

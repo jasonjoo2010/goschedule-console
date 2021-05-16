@@ -7,7 +7,7 @@ package utils
 import (
 	"strings"
 
-	"github.com/jasonjoo2010/goschedule/core/definition"
+	"github.com/jasonjoo2010/goschedule/definition"
 )
 
 // a:{param1},bbb:{param2}
@@ -31,7 +31,7 @@ func (s *state) Reset() {
 		}
 		return
 	}
-	item := definition.TaskItem{Id: s.id.String()}
+	item := definition.TaskItem{ID: s.id.String()}
 	if s.param.Len() > 0 {
 		item.Parameter = s.param.String()
 		s.param.Reset()

@@ -17,7 +17,7 @@ EOT
 fi
 
 if [ "no$@" = "no" ]; then
-    $@=goschedule-console
+    set $@ "goschedule-console"
 fi
 
 exec gosu goschedule $@

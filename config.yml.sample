@@ -1,0 +1,8 @@
+app:
+  base: /
+storage:
+    type: etcdv2
+    address: 127.0.0.1:6379
+    username: 
+    password: 
+    namespace: /schedule

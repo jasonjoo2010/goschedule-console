@@ -7,7 +7,9 @@ package app
 import (
 	"errors"
 	"os"
+	"strings"
 
+	"github.com/jasonjoo2010/goschedule-console/controller"
 	"github.com/jasonjoo2010/goschedule-console/types"
 	"github.com/jasonjoo2010/goschedule-console/utils"
 	"gopkg.in/yaml.v3"
@@ -57,7 +59,7 @@ func (app *App) ReloadConfig() error {
 		return err
 	}
 	if !types.VerifyStorage(conf.Storage) {
-		return errors.New("Parse storage configuration failed")
+		return errors.New("parse storage configuration failed")
 	}
 	app.Conf = conf
 	if app.Store != nil {
@@ -65,5 +67,11 @@ func (app *App) ReloadConfig() error {
 		app.Store = nil
 	}
 	app.Store = utils.CreateStore(app.Conf.Storage)
+	if app.Conf.Base != "" {
+		if !strings.HasSuffix(app.Conf.Base, "/") {
+			app.Conf.Base += "/"
+		}
+		controller.SetBasePath(app.Conf.Base)
+	}
 	return nil
 }

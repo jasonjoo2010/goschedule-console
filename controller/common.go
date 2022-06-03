@@ -4,7 +4,23 @@
 
 package controller
 
-import "github.com/gin-gonic/gin"
+import (
+	"sync/atomic"
+
+	"github.com/gin-gonic/gin"
+	"github.com/jasonjoo2010/goschedule/log"
+)
+
+var basePath atomic.Value
+
+func init() {
+	basePath.Store("/")
+}
+
+func SetBasePath(path string) {
+	log.Infof("Set base path to %s", path)
+	basePath.Store(path)
+}
 
 func DataWithSession(data map[string]interface{}) map[string]interface{} {
 	if gin.Mode() == gin.ReleaseMode {
@@ -12,5 +28,6 @@ func DataWithSession(data map[string]interface{}) map[string]interface{} {
 	} else {
 		data["ENV"] = "development"
 	}
+	data["basePath"] = basePath.Load()
 	return data
 }

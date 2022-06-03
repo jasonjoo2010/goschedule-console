@@ -13,6 +13,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jasonjoo2010/goschedule-console/types"
+	"github.com/jasonjoo2010/goschedule/log"
 	"github.com/jasonjoo2010/goschedule/store"
 	"github.com/jasonjoo2010/goschedule/store/database"
 	"github.com/jasonjoo2010/goschedule/store/etcdv2"
@@ -20,7 +21,6 @@ import (
 	"github.com/jasonjoo2010/goschedule/store/memory"
 	"github.com/jasonjoo2010/goschedule/store/redis"
 	"github.com/jasonjoo2010/goschedule/store/zookeeper"
-	"github.com/jasonjoo2010/goschedule/log"
 )
 
 func parseAddr(address string, default_port int) (string, int, error) {
@@ -87,7 +87,7 @@ func CreateStore(s types.Storage) store.Store {
 		if err != nil {
 			return nil
 		}
-		return etcdv2.New(s.Namespace, []string{fmt.Sprintf("%s:%d", addr, port)})
+		return etcdv2.New(s.Namespace, []string{fmt.Sprintf("http://%s:%d", addr, port)})
 	case "etcdv3":
 		addr, port, err := parseAddr(s.Address, 2379)
 		if err != nil {

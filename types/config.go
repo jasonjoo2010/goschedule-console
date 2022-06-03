@@ -10,8 +10,13 @@ import (
 
 var STORAGE_TYPES [6]string = [...]string{"memory", "redis", "zookeeper", "database", "etcdv2", "etcdv3"}
 
-// DashboardConfig respresents structure of config.xml
+type App struct {
+	Base string `default:"/"`
+}
+
+// DashboardConfig represents structure of config.xml
 type DashboardConfig struct {
+	App
 	Storage Storage
 }
 

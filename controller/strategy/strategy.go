@@ -21,7 +21,7 @@ import (
 
 func Init(engine *gin.Engine) {
 	engine.GET("/", func(c *gin.Context) {
-		c.Redirect(301, "/strategy/index")
+		c.Redirect(301, app.Instance().Conf.Base+"strategy/index")
 	})
 	group := engine.Group("/strategy")
 

@@ -90,7 +90,7 @@ func storageChecker(c *gin.Context) {
 	}
 	store := app.Instance().Store
 	if store == nil {
-		c.Redirect(302, "/config/modify")
+		c.Redirect(302, app.Instance().Conf.Base+"config/modify")
 		c.Abort()
 		return
 	}

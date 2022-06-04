@@ -22,7 +22,7 @@ const (
 	PREFIX_TASK     = "Task:"
 )
 
-func Init(engine *gin.Engine) {
+func Init(engine *gin.RouterGroup) {
 	configGroup := engine.Group("/config")
 
 	configGroup.GET("/modify", modifyHandler)

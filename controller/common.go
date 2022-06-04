@@ -22,6 +22,10 @@ func SetBasePath(path string) {
 	basePath.Store(path)
 }
 
+func GetBasePath() string {
+	return basePath.Load().(string)
+}
+
 func DataWithSession(data map[string]interface{}) map[string]interface{} {
 	if gin.Mode() == gin.ReleaseMode {
 		data["ENV"] = "production"

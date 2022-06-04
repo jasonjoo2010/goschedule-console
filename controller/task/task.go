@@ -25,7 +25,7 @@ type info struct {
 	Assignments   []*definition.TaskAssignment
 }
 
-func Init(engine *gin.Engine) {
+func Init(engine *gin.RouterGroup) {
 	group := engine.Group("/task")
 
 	group.GET("/index", indexHandler)

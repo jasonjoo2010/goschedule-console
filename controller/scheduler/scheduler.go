@@ -13,7 +13,7 @@ import (
 	"github.com/jasonjoo2010/goschedule-console/types"
 )
 
-func Init(engine *gin.Engine) {
+func Init(engine *gin.RouterGroup) {
 	group := engine.Group("/scheduler")
 
 	group.GET("/index", indexHandler)

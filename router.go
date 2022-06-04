@@ -9,6 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jasonjoo2010/goschedule-console/app"
+	"github.com/jasonjoo2010/goschedule-console/controller"
 	"github.com/jasonjoo2010/goschedule-console/controller/config"
 	"github.com/jasonjoo2010/goschedule-console/controller/scheduler"
 	"github.com/jasonjoo2010/goschedule-console/controller/strategy"
@@ -82,11 +83,10 @@ func timestamp(ts int64) string {
 }
 
 func storageChecker(c *gin.Context) {
-	if c.FullPath() == "/config/modify" {
+	switch c.FullPath() {
+	case controller.GetBasePath() + "config/modify", controller.GetBasePath() + "config/save":
 		return
-	}
-	if c.FullPath() == "/config/save" {
-		return
+	default:
 	}
 	store := app.Instance().Store
 	if store == nil {
@@ -101,21 +101,22 @@ func InitEngine() *gin.Engine {
 	engine.FuncMap["add"] = add
 	engine.FuncMap["timestamp"] = timestamp
 	engine.FuncMap["timestampMillis"] = timestampMillis
-	engine.Static("/css", "static/css")
-	engine.Static("/js", "static/js")
 	engine.LoadHTMLGlob("templates/**/*")
-	engine.Use(gin.Recovery())
-	engine.Use(storageChecker)
-	engine.Use(func(c *gin.Context) {
+	rootGroup := engine.Group(controller.GetBasePath())
+	rootGroup.Static("/css", "static/css")
+	rootGroup.Static("/js", "static/js")
+	rootGroup.Use(gin.Recovery())
+	rootGroup.Use(storageChecker)
+	rootGroup.Use(func(c *gin.Context) {
 		if gin.Mode() == gin.ReleaseMode {
 			c.Set("ENV", "production")
 		} else {
 			c.Set("ENV", "development")
 		}
 	})
-	config.Init(engine)
-	strategy.Init(engine)
-	scheduler.Init(engine)
-	task.Init(engine)
+	config.Init(rootGroup)
+	strategy.Init(rootGroup)
+	scheduler.Init(rootGroup)
+	task.Init(rootGroup)
 	return engine
 }

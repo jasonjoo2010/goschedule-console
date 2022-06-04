@@ -19,7 +19,7 @@ import (
 	"github.com/robfig/cron"
 )
 
-func Init(engine *gin.Engine) {
+func Init(engine *gin.RouterGroup) {
 	engine.GET("/", func(c *gin.Context) {
 		c.Redirect(301, app.Instance().Conf.Base+"strategy/index")
 	})

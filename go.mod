@@ -3,7 +3,7 @@ module github.com/jasonjoo2010/goschedule-console
 go 1.14
 
 require (
-	github.com/gin-gonic/gin v1.7.0
+	github.com/gin-gonic/gin v1.7.7
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/jasonjoo2010/goschedule v1.1.0
 	github.com/jasonjoo2010/goschedule/store/database v1.1.0

@@ -3,7 +3,7 @@ module github.com/jasonjoo2010/goschedule-console
 go 1.14
 
 require (
-	github.com/gin-gonic/gin v1.7.0
+	github.com/gin-gonic/gin v1.9.0
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/jasonjoo2010/goschedule v1.1.0
 	github.com/jasonjoo2010/goschedule/store/database v1.1.0
@@ -12,6 +12,6 @@ require (
 	github.com/jasonjoo2010/goschedule/store/redis v1.1.0
 	github.com/jasonjoo2010/goschedule/store/zookeeper v1.1.0
 	github.com/robfig/cron v1.2.0
-	github.com/stretchr/testify v1.7.0 // test
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
+	github.com/stretchr/testify v1.8.1 // test
+	gopkg.in/yaml.v3 v3.0.1
 )
